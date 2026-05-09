@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(143, 108, 61, 0.1), transparent 28%),
+    radial-gradient(circle at top right, rgba(49, 92, 115, 0.12), transparent 24%),
+    linear-gradient(180deg, #f6f2e8 0%, #ece7db 100%);
+  color: #1f2933;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.timeline-surface .vis-timeline {
+  border: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+.timeline-surface .vis-panel.vis-center,
+.timeline-surface .vis-panel.vis-left,
+.timeline-surface .vis-panel.vis-top,
+.timeline-surface .vis-panel.vis-bottom {
+  border-color: #e4ddd0;
+}
+
+.timeline-surface .vis-time-axis .vis-text {
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.timeline-surface .vis-labelset .vis-label {
+  color: #344152;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.timeline-surface .vis-item {
+  --item-bg: #315c73;
+  --item-border: #315c73;
+  --item-fg: #f5fbff;
+  border-radius: 12px;
+  border-width: 1px;
+  background: var(--item-bg);
+  border-color: var(--item-border);
+  color: var(--item-fg);
+  box-shadow: 0 8px 24px rgba(54, 61, 67, 0.08);
+  font-size: 13px;
+  font-weight: 700;
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    filter 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+
+.timeline-surface .vis-item.vis-range {
+  min-height: 38px;
+  min-width: 20px;
+}
+
+.timeline-surface .vis-item .vis-item-content {
+  padding: 8px 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timeline-surface .vis-item.vis-selected {
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.15);
+}
+
+.timeline-surface .vis-item.timeline-item-background {
+  border-radius: 0;
+  box-shadow: none;
+  opacity: 0.16;
+}
+
+.timeline-surface .vis-item.timeline-item-context-label {
+  opacity: 0.95;
+}
+
+.timeline-surface .vis-item.vis-point {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  padding-left: 14px;
+}
+
+.timeline-surface .vis-item.vis-point .vis-item-content {
+  white-space: normal;
+  border-radius: 12px;
+  padding: 7px 10px;
+  background: var(--item-bg);
+  border: 1px solid var(--item-border);
+  color: var(--item-fg);
+  box-shadow: 0 8px 24px rgba(54, 61, 67, 0.08);
+}
+
+.timeline-surface .vis-item.category-world-war {
+  --item-bg: #b91c1c;
+  --item-border: #b91c1c;
+  --item-fg: #fff7f7;
+}
+
+.timeline-surface .vis-item.category-cold-war {
+  --item-bg: #d97706;
+  --item-border: #d97706;
+  --item-fg: #fffaf2;
+}
+
+.timeline-surface .vis-item.category-proxy-war {
+  --item-bg: #ea580c;
+  --item-border: #ea580c;
+  --item-fg: #fff7f2;
+}
+
+.timeline-surface .vis-item.category-hybrid-war {
+  --item-bg: #9d174d;
+  --item-border: #9d174d;
+  --item-fg: #fff7fb;
+}
+
+.timeline-surface .vis-item.category-computing {
+  --item-bg: #0f766e;
+  --item-border: #0f766e;
+  --item-fg: #f0fdfa;
+}
+
+.timeline-surface .vis-item.category-telecommunications {
+  --item-bg: #0891b2;
+  --item-border: #0891b2;
+  --item-fg: #f0f9ff;
+}
+
+.timeline-surface .vis-item.category-aerospace {
+  --item-bg: #2563eb;
+  --item-border: #2563eb;
+  --item-fg: #eff6ff;
+}
+
+.timeline-surface .vis-item.category-navigation {
+  --item-bg: #16a34a;
+  --item-border: #16a34a;
+  --item-fg: #f0fdf4;
+}
+
+.timeline-surface .vis-item.category-cyber-ai {
+  --item-bg: #6d28d9;
+  --item-border: #6d28d9;
+  --item-fg: #f5f3ff;
+}
+
+.timeline-surface .vis-item.vis-point .vis-dot {
+  border-width: 4px;
+  border-color: var(--item-border);
+}
+
+.timeline-surface .vis-dot {
+  width: 12px;
+  height: 12px;
+}
