@@ -3,11 +3,9 @@
 import { useCallback, useMemo, useState } from "react";
 
 import { events } from "@/data/events";
-import { EventDetailsPanel } from "@/components/event-details-panel";
 import { Bibliography } from "@/components/bibliography";
-import { HistoricalIntro } from "@/components/historical-intro";
+import { EventDetailsPanel } from "@/components/event-details-panel";
 import { Legend } from "@/components/legend";
-import { MethodologicalNote } from "@/components/methodological-note";
 import { TimelineView } from "@/components/timeline-view";
 
 function overlapsRange(eventStart: string, eventEnd: string | undefined, rangeStart: string, rangeEnd: string) {
@@ -47,9 +45,6 @@ export function TimelineDashboard() {
 
   return (
     <div className="space-y-6">
-      <HistoricalIntro />
-      <MethodologicalNote />
-
       <TimelineView
         events={worldWarsPeriod}
         title="1914-1945 · Guerras mundiales"

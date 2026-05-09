@@ -28,6 +28,10 @@
 
 ## Prioridad media
 
+- Resolver el caso borde del label contextual de `Guerra Fría` en el bloque `1946-1991`.
+  - Estado actual: al estar muy cerca del borde izquierdo, su label sigue viéndose mal posicionado.
+  - Sugerencia: tratarlo como excepción visual explícita o permitir un offset dependiente del viewport.
+
 - Normalizar `sourceIds` cuyos nombres ya no coinciden con el publisher o el título real.
   - Casos visibles:
     - `historian-cold-war` ahora apunta a The National WWII Museum
