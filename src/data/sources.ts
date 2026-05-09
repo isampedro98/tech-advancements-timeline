@@ -15,9 +15,9 @@ export const sources: TimelineSource[] = [
   },
   {
     id: "historian-cold-war",
-    title: "The start of the Cold War",
-    publisher: "U.S. Office of the Historian",
-    url: "https://history.state.gov/milestones/1945-1952/cold-war"
+    title: "Cold Conflict",
+    publisher: "The National WWII Museum",
+    url: "https://www.nationalww2museum.org/war/articles/cold-conflict"
   },
   {
     id: "britannica-korean-war",
@@ -111,9 +111,9 @@ export const sources: TimelineSource[] = [
   },
   {
     id: "nps-radar",
-    title: "Radar in World War II",
-    publisher: "National Park Service",
-    url: "https://www.nps.gov/articles/radar-in-world-war-ii.htm"
+    title: "How radar changed the Second World War",
+    publisher: "Imperial War Museums",
+    url: "https://www.iwm.org.uk/history/second-world-war/battle-of-britain/how-radar-changed-the-second-world-war"
   },
   {
     id: "raf-aviation-timeline",
@@ -123,15 +123,15 @@ export const sources: TimelineSource[] = [
   },
   {
     id: "chm-colossus-eniac",
-    title: "Colossus and ENIAC",
+    title: "The NeverEnding Quest for Firsts (Colossus and ENIAC)",
     publisher: "Computer History Museum",
-    url: "https://www.computerhistory.org/revolution/computer-history/"
+    url: "https://computerhistory.org/blog/the-neverending-quest-for-firsts/"
   },
   {
     id: "energy-manhattan",
-    title: "The Manhattan Project",
-    publisher: "U.S. Department of Energy",
-    url: "https://www.energy.gov/management/history/manhattan-project"
+    title: "Manhattan Project National Historical Park",
+    publisher: "National Park Service",
+    url: "https://www.nps.gov/mapr/learn/manhattan-project.htm"
   },
   {
     id: "raf-jet-engine",
@@ -141,15 +141,15 @@ export const sources: TimelineSource[] = [
   },
   {
     id: "ieee-transistor",
-    title: "The transistor as an IEEE milestone",
-    publisher: "IEEE",
-    url: "https://ethw.org/Milestones:Invention_of_the_Transistor,_1947"
+    title: "The transistor: 75 years since the famed Bell Labs invention changed the world",
+    publisher: "Nokia Bell Labs",
+    url: "https://www.nokia.com/blog/the-transistor-75-years-since-the-famed-nokia-bell-labs-invention-changed-the-world/"
   },
   {
     id: "ieee-integrated-circuit",
-    title: "Integrated circuit milestones",
-    publisher: "IEEE",
-    url: "https://ethw.org/Milestones:Invention_of_the_Integrated_Circuit,_1958"
+    title: "Invention of the integrated circuit",
+    publisher: "Wikipedia",
+    url: "https://en.wikipedia.org/wiki/Invention_of_the_integrated_circuit"
   },
   {
     id: "arpa-arpanet",
@@ -165,9 +165,9 @@ export const sources: TimelineSource[] = [
   },
   {
     id: "space-force-gps",
-    title: "GPS history",
-    publisher: "U.S. Space Force",
-    url: "https://www.spaceforce.mil/About-Us/Fact-Sheets/Article/2197778/global-positioning-system/"
+    title: "A Brief History of GPS",
+    publisher: "The Aerospace Corporation",
+    url: "https://aerospace.org/article/brief-history-gps"
   },
   {
     id: "cern-www",
@@ -177,21 +177,21 @@ export const sources: TimelineSource[] = [
   },
   {
     id: "csis-drones",
-    title: "The diffusion of military drones",
+    title: "How Russia Is Building a Sovereign Drone Ecosystem With AI-Driven Autonomy",
     publisher: "CSIS",
-    url: "https://www.csis.org/analysis/drones"
+    url: "https://www.csis.org/analysis/how-russia-building-sovereign-drone-ecosystem-ai-driven-autonomy"
   },
   {
     id: "symantec-stuxnet",
-    title: "Stuxnet dossier",
-    publisher: "Symantec",
-    url: "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/stuxnet-dossier"
+    title: "Cyber-044 (Stuxnet source document)",
+    publisher: "National Security Archive",
+    url: "https://nsarchive2.gwu.edu/NSAEBB/NSAEBB424/docs/Cyber-044.pdf"
   },
   {
     id: "nato-ai",
     title: "NATO AI strategy and autonomy",
     publisher: "NATO",
-    url: "https://www.nato.int/cps/en/natohq/topics_183523.htm"
+    url: "https://www.nato.int/en/about-us/official-texts-and-resources/official-texts/2024/07/10/summary-of-natos-revised-artificial-intelligence-ai-strategy"
   },
   {
     id: "stanford-ai-index",

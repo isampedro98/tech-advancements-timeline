@@ -3,6 +3,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 import { categoryMeta } from "@/data/events";
+import { formatEventDate } from "@/lib/date";
 import type { TimelineEvent } from "@/types/timeline";
 
 interface TimelineViewProps {
@@ -27,28 +28,37 @@ interface TimelineItemRecord {
   title: string;
 }
 
+interface TimelineEventProperties {
+  items?: Array<string | number>;
+  item?: string | number;
+  start?: Date;
+  end?: Date;
+  event?: {
+    target?: EventTarget | null;
+  };
+}
+
 interface TimelineApi {
   destroy: () => void;
-  on: (
-    eventName: string,
-    handler: (properties: {
-      items?: Array<string | number>;
-      item?: string | number;
-      start?: Date;
-      end?: Date;
-    }) => void
-  ) => void;
+  on: (eventName: string, handler: (properties: TimelineEventProperties) => void) => void;
   redraw: () => void;
+  setSelection: (
+    ids: Array<string | number>,
+    options?: { focus?: boolean; animation?: boolean }
+  ) => void;
   setItems: (items: unknown) => void;
   setWindow: (
     start: string | Date,
     end: string | Date,
     options?: { animation?: boolean }
   ) => void;
-  setSelection: (
-    ids: Array<string | number>,
-    options?: { focus?: boolean; animation?: boolean }
-  ) => void;
+}
+
+interface TooltipState {
+  eventId: string;
+  left: number;
+  top: number;
+  placement: "top" | "bottom";
 }
 
 type DataSetConstructor = new (items: TimelineItemRecord[]) => unknown;
@@ -65,11 +75,36 @@ const groups = [
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 const YEAR_IN_MS = DAY_IN_MS * 365.25;
+const EXTERNAL_LABEL_DURATION_MS = YEAR_IN_MS * 1.75;
+const TOOLTIP_WIDTH_PX = 290;
+const TOOLTIP_SUMMARY_MAX_LENGTH = 128;
 
-function getPrimaryTimelineItemId(properties: {
-  items?: Array<string | number>;
-  item?: string | number;
-}) {
+const forcedExternalLabelIds = new Set([
+  "sputnik",
+  "stuxnet",
+  "world-wide-web",
+  "berlin-wall-fall",
+  "colossus",
+  "eniac",
+  "integrated-circuit"
+]);
+
+const windowFormatter = new Intl.DateTimeFormat("es-AR", {
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC"
+});
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function getPrimaryTimelineItemId(properties: TimelineEventProperties) {
   if (Array.isArray(properties.items) && properties.items.length > 0) {
     return String(properties.items[0]);
   }
@@ -81,11 +116,84 @@ function getPrimaryTimelineItemId(properties: {
   return null;
 }
 
-const windowFormatter = new Intl.DateTimeFormat("es-AR", {
-  month: "short",
-  year: "numeric",
-  timeZone: "UTC"
-});
+function getDisplayLabel(event: TimelineEvent) {
+  return event.shortTitle?.trim() || event.title;
+}
+
+function getRelatedEventIds(event: TimelineEvent) {
+  return event.relatedEventIds;
+}
+
+function getTooltipSummary(summary: string) {
+  const normalized = summary.replace(/\s+/g, " ").trim();
+
+  if (normalized.length <= TOOLTIP_SUMMARY_MAX_LENGTH) {
+    return normalized;
+  }
+
+  const sliced = normalized.slice(0, TOOLTIP_SUMMARY_MAX_LENGTH - 1);
+  const lastSpace = sliced.lastIndexOf(" ");
+  return `${sliced.slice(0, lastSpace > 0 ? lastSpace : sliced.length)}…`;
+}
+
+function getEventDurationMs(event: TimelineEvent) {
+  const end = event.end ?? event.start;
+  return Math.max(0, new Date(end).getTime() - new Date(event.start).getTime());
+}
+
+function isNarrowEvent(event: TimelineEvent) {
+  if (event.renderAsContextBand) {
+    return false;
+  }
+
+  if (forcedExternalLabelIds.has(event.id) || event.type === "point") {
+    return true;
+  }
+
+  return getEventDurationMs(event) <= EXTERNAL_LABEL_DURATION_MS;
+}
+
+function buildLabelMarkup(event: TimelineEvent) {
+  const label = escapeHtml(getDisplayLabel(event));
+
+  if (isNarrowEvent(event)) {
+    return `
+      <span class="timeline-label timeline-label--external" aria-hidden="true">
+        <span class="timeline-label__text">${label}</span>
+      </span>
+    `;
+  }
+
+  return `<span class="timeline-label timeline-label--internal">${label}</span>`;
+}
+
+function getItemClassName(event: TimelineEvent, baseClassName: string) {
+  if (event.renderAsContextBand) {
+    return baseClassName;
+  }
+
+  if (!isNarrowEvent(event)) {
+    return `${baseClassName} timeline-item--internal-label`;
+  }
+
+  if (event.type === "point") {
+    return `${baseClassName} timeline-item--external-label timeline-item--external-point`;
+  }
+
+  return `${baseClassName} timeline-item--external-label timeline-item--external-range`;
+}
+
+function getEventAriaLabel(event: TimelineEvent) {
+  const category = categoryMeta.find((item) => item.id === event.category);
+  const parts = [event.title, formatEventDate(event)];
+
+  if (category) {
+    parts.push(category.label);
+  }
+
+  parts.push("Abrir detalle");
+  return parts.join(". ");
+}
 
 interface BuiltTimelineData {
   eventToItemIds: Record<string, string[]>;
@@ -99,10 +207,8 @@ function buildItems(events: TimelineEvent[]): BuiltTimelineData {
   const items: TimelineItemRecord[] = [];
 
   for (const event of events) {
-    const category = categoryMeta.find((item) => item.id === event.category);
     const baseClassName = `timeline-item category-${event.category}`;
     const itemIds: string[] = [];
-    const tooltipLabel = category ? `${event.title} · ${category.label}` : event.title;
 
     if (event.renderAsContextBand) {
       const bandId = `${event.id}--band`;
@@ -117,18 +223,18 @@ function buildItems(events: TimelineEvent[]): BuiltTimelineData {
         end: event.end,
         type: "background",
         className: `${baseClassName} timeline-item-background`,
-        title: tooltipLabel
+        title: ""
       });
 
       items.push({
         id: labelId,
         group: event.group,
-        content: event.shortTitle ?? event.title,
+        content: buildLabelMarkup(event),
         subgroup: event.category,
         start: event.start,
         type: "point",
         className: `${baseClassName} timeline-item-context-label`,
-        title: tooltipLabel
+        title: ""
       });
 
       itemToEventId[bandId] = event.id;
@@ -138,13 +244,13 @@ function buildItems(events: TimelineEvent[]): BuiltTimelineData {
       items.push({
         id: event.id,
         group: event.group,
-        content: event.shortTitle ?? event.title,
+        content: buildLabelMarkup(event),
         subgroup: event.category,
         start: event.start,
         end: event.end,
         type: event.type,
-        className: baseClassName,
-        title: tooltipLabel
+        className: getItemClassName(event, baseClassName),
+        title: ""
       });
 
       itemToEventId[event.id] = event.id;
@@ -166,12 +272,13 @@ export const TimelineView = memo(function TimelineView({
   contextNote,
   onSelect
 }: TimelineViewProps) {
+  const surfaceFrameRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const timelineRef = useRef<TimelineApi | null>(null);
   const datasetConstructorRef = useRef<DataSetConstructor | null>(null);
-  const eventItemMapRef = useRef<Record<string, string[]>>({});
   const itemEventMapRef = useRef<Record<string, string>>({});
   const onSelectRef = useRef(onSelect);
+  const eventsByIdRef = useRef<Record<string, TimelineEvent>>({});
   const currentWindowRef = useRef({
     start: new Date(rangeStart),
     end: new Date(rangeEnd)
@@ -181,6 +288,8 @@ export const TimelineView = memo(function TimelineView({
     start: windowFormatter.format(new Date(rangeStart)),
     end: windowFormatter.format(new Date(rangeEnd))
   });
+  const [tooltip, setTooltip] = useState<TooltipState | null>(null);
+
   const rangeStartMs = useMemo(() => new Date(rangeStart).getTime(), [rangeStart]);
   const rangeEndMs = useMemo(() => new Date(rangeEnd).getTime(), [rangeEnd]);
   const fullRangeMs = useMemo(() => rangeEndMs - rangeStartMs, [rangeEndMs, rangeStartMs]);
@@ -188,14 +297,78 @@ export const TimelineView = memo(function TimelineView({
     () => Math.min(fullRangeMs, Math.max(YEAR_IN_MS, fullRangeMs * 0.08)),
     [fullRangeMs]
   );
+  const eventsById = useMemo(
+    () => Object.fromEntries(events.map((event) => [event.id, event])) as Record<string, TimelineEvent>,
+    [events]
+  );
 
   useEffect(() => {
     onSelectRef.current = onSelect;
   }, [onSelect]);
 
   useEffect(() => {
+    eventsByIdRef.current = eventsById;
+  }, [eventsById]);
+
+  function hideTooltip() {
+    setTooltip(null);
+  }
+
+  function getTimelineItemElement(itemId: string) {
+    return containerRef.current?.querySelector<HTMLElement>(`[data-id="${itemId}"]`) ?? null;
+  }
+
+  function updateTooltipFromElement(itemId: string, itemElement: HTMLElement) {
+    const eventId = itemEventMapRef.current[itemId];
+    const event = eventId ? eventsByIdRef.current[eventId] : null;
+
+    if (!event) {
+      return;
+    }
+
+    const itemRect = itemElement.getBoundingClientRect();
+    const centeredLeft = itemRect.left + itemRect.width / 2;
+    const maxLeft = Math.max(12, window.innerWidth - TOOLTIP_WIDTH_PX - 12);
+    const left = Math.max(12, Math.min(maxLeft, centeredLeft - TOOLTIP_WIDTH_PX / 2));
+    const hasRoomAbove = itemRect.top > 120;
+
+    setTooltip({
+      eventId,
+      left,
+      top: hasRoomAbove ? itemRect.top - 10 : itemRect.bottom + 10,
+      placement: hasRoomAbove ? "top" : "bottom"
+    });
+  }
+
+  function decorateInteractiveItems() {
+    if (!containerRef.current) {
+      return;
+    }
+
+    const itemElements = containerRef.current.querySelectorAll<HTMLElement>(
+      ".vis-item:not(.timeline-item-background)"
+    );
+
+    itemElements.forEach((itemElement) => {
+      const itemId = itemElement.dataset.id;
+      const eventId = itemId ? itemEventMapRef.current[itemId] : null;
+      const event = eventId ? eventsByIdRef.current[eventId] : null;
+
+      if (!itemId || !event) {
+        return;
+      }
+
+      itemElement.tabIndex = 0;
+      itemElement.setAttribute("role", "button");
+      itemElement.setAttribute("aria-haspopup", "dialog");
+      itemElement.setAttribute("aria-label", getEventAriaLabel(event));
+    });
+  }
+
+  useEffect(() => {
     let isMounted = true;
     let handleResize: (() => void) | null = null;
+    let removeKeyboardSupport: (() => void) | null = null;
 
     async function initializeTimeline() {
       if (!containerRef.current) {
@@ -213,7 +386,6 @@ export const TimelineView = memo(function TimelineView({
 
       datasetConstructorRef.current = DataSet as DataSetConstructor;
       const builtData = buildItems(events);
-      eventItemMapRef.current = builtData.eventToItemIds;
       itemEventMapRef.current = builtData.itemToEventId;
 
       const timeline = new Timeline(
@@ -224,12 +396,12 @@ export const TimelineView = memo(function TimelineView({
           editable: false,
           groupOrder: "order",
           end: rangeEnd,
-          horizontalScroll: false,
+          horizontalScroll: true,
           margin: {
-            axis: 12,
+            axis: 10,
             item: {
-              horizontal: 12,
-              vertical: 10
+              horizontal: 10,
+              vertical: 12
             }
           },
           max: rangeEnd,
@@ -254,10 +426,35 @@ export const TimelineView = memo(function TimelineView({
 
       timeline.on("select", (properties) => {
         const selectedItemId = getPrimaryTimelineItemId(properties);
-        const selectedId = selectedItemId
-          ? itemEventMapRef.current[selectedItemId]
-          : null;
+        const selectedId = selectedItemId ? itemEventMapRef.current[selectedItemId] : null;
+        hideTooltip();
         onSelectRef.current(selectedId ?? null);
+
+        window.requestAnimationFrame(() => {
+          timeline.setSelection([], { animation: false });
+        });
+      });
+
+      timeline.on("itemover", (properties) => {
+        const itemId = getPrimaryTimelineItemId(properties);
+
+        if (!itemId) {
+          return;
+        }
+
+        const itemElement =
+          getTimelineItemElement(itemId) ??
+          (properties.event?.target instanceof HTMLElement
+            ? properties.event.target.closest(".vis-item")
+            : null);
+
+        if (itemElement instanceof HTMLElement) {
+          updateTooltipFromElement(itemId, itemElement);
+        }
+      });
+
+      timeline.on("itemout", () => {
+        hideTooltip();
       });
 
       timeline.on("rangechanged", (properties) => {
@@ -279,12 +476,13 @@ export const TimelineView = memo(function TimelineView({
 
           if (availableTravelMs === 0) {
             setWindowPositionValue(0);
-            return;
+          } else {
+            const nextValue = ((currentStartMs - rangeStartMs) / availableTravelMs) * 1000;
+            setWindowPositionValue(Math.max(0, Math.min(1000, Math.round(nextValue))));
           }
 
-          const nextValue =
-            ((currentStartMs - rangeStartMs) / availableTravelMs) * 1000;
-          setWindowPositionValue(Math.max(0, Math.min(1000, Math.round(nextValue))));
+          hideTooltip();
+          window.requestAnimationFrame(decorateInteractiveItems);
         }
       });
 
@@ -300,8 +498,74 @@ export const TimelineView = memo(function TimelineView({
       });
       timelineRef.current = timeline;
 
-      handleResize = () => timeline.redraw();
+      window.requestAnimationFrame(decorateInteractiveItems);
+
+      handleResize = () => {
+        timeline.redraw();
+        window.requestAnimationFrame(decorateInteractiveItems);
+      };
       window.addEventListener("resize", handleResize);
+
+      const containerNode = containerRef.current;
+
+      const handleFocusIn = (event: FocusEvent) => {
+        if (!(event.target instanceof HTMLElement)) {
+          return;
+        }
+
+        const itemElement = event.target.closest(".vis-item");
+
+        if (!(itemElement instanceof HTMLElement)) {
+          return;
+        }
+
+        const itemId = itemElement.dataset.id;
+
+        if (itemId) {
+          updateTooltipFromElement(itemId, itemElement);
+        }
+      };
+
+      const handleFocusOut = () => {
+        hideTooltip();
+      };
+
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key !== "Enter" && event.key !== " ") {
+          return;
+        }
+
+        if (!(event.target instanceof HTMLElement)) {
+          return;
+        }
+
+        const itemElement = event.target.closest(".vis-item");
+
+        if (!(itemElement instanceof HTMLElement)) {
+          return;
+        }
+
+        const itemId = itemElement.dataset.id;
+        const eventId = itemId ? itemEventMapRef.current[itemId] : null;
+
+        if (!eventId) {
+          return;
+        }
+
+        event.preventDefault();
+        hideTooltip();
+        onSelectRef.current(eventId);
+      };
+
+      containerNode.addEventListener("focusin", handleFocusIn);
+      containerNode.addEventListener("focusout", handleFocusOut);
+      containerNode.addEventListener("keydown", handleKeyDown);
+
+      removeKeyboardSupport = () => {
+        containerNode.removeEventListener("focusin", handleFocusIn);
+        containerNode.removeEventListener("focusout", handleFocusOut);
+        containerNode.removeEventListener("keydown", handleKeyDown);
+      };
     }
 
     initializeTimeline();
@@ -309,13 +573,16 @@ export const TimelineView = memo(function TimelineView({
     return () => {
       isMounted = false;
 
-        if (handleResize) {
-          window.removeEventListener("resize", handleResize);
-        }
-        timelineRef.current?.destroy();
-        timelineRef.current = null;
-      };
-  }, [fullRangeMs, minimumVisibleMs, rangeEnd, rangeStart, rangeStartMs]);
+      if (handleResize) {
+        window.removeEventListener("resize", handleResize);
+      }
+
+      removeKeyboardSupport?.();
+      hideTooltip();
+      timelineRef.current?.destroy();
+      timelineRef.current = null;
+    };
+  }, [events, fullRangeMs, minimumVisibleMs, rangeEnd, rangeStart, rangeStartMs]);
 
   useEffect(() => {
     if (!timelineRef.current || !datasetConstructorRef.current) {
@@ -323,10 +590,11 @@ export const TimelineView = memo(function TimelineView({
     }
 
     const builtData = buildItems(events);
-    eventItemMapRef.current = builtData.eventToItemIds;
     itemEventMapRef.current = builtData.itemToEventId;
     const DataSet = datasetConstructorRef.current;
     timelineRef.current.setItems(new DataSet(builtData.items));
+    hideTooltip();
+    window.requestAnimationFrame(decorateInteractiveItems);
   }, [events]);
 
   function handleWindowPositionChange(nextValue: number) {
@@ -347,10 +615,17 @@ export const TimelineView = memo(function TimelineView({
     const nextStartMs = rangeStartMs + (nextValue / 1000) * availableTravelMs;
     const nextEndMs = nextStartMs + visibleSpanMs;
 
+    hideTooltip();
     timelineRef.current.setWindow(new Date(nextStartMs), new Date(nextEndMs), {
       animation: false
     });
   }
+
+  const tooltipEvent = tooltip ? eventsById[tooltip.eventId] : null;
+  const tooltipCategory = tooltipEvent
+    ? categoryMeta.find((item) => item.id === tooltipEvent.category)
+    : null;
+  const tooltipRelatedCount = tooltipEvent ? getRelatedEventIds(tooltipEvent).length : 0;
 
   return (
     <div className="rounded-[1.75rem] border border-line bg-panel p-5 shadow-panel lg:p-6">
@@ -359,9 +634,7 @@ export const TimelineView = memo(function TimelineView({
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
             {title}
           </p>
-          <p className="mt-1 text-sm text-slate-600">
-            {description}
-          </p>
+          <p className="mt-1 text-sm text-slate-600">{description}</p>
         </div>
       </div>
 
@@ -394,10 +667,46 @@ export const TimelineView = memo(function TimelineView({
         </div>
       </div>
 
-      <div
-        ref={containerRef}
-        className="timeline-surface h-[500px] w-full overflow-hidden rounded-[1.4rem] border border-slate-200 bg-white lg:h-[560px]"
-      />
+      <div className="overflow-x-auto pb-1">
+        <div ref={surfaceFrameRef} className="relative min-w-[960px]">
+          <div
+            ref={containerRef}
+            className="timeline-surface h-[500px] w-full overflow-hidden rounded-[1.4rem] border border-slate-200 bg-white lg:h-[540px]"
+          />
+
+          {tooltip && tooltipEvent ? (
+            <div
+              className={`pointer-events-none fixed z-30 w-[290px] rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-[0_18px_40px_rgba(15,23,42,0.12)] backdrop-blur-sm ${
+                tooltip.placement === "top" ? "-translate-y-full" : ""
+              }`}
+              style={{
+                left: `${tooltip.left}px`,
+                top: `${tooltip.top}px`
+              }}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  {tooltipCategory?.label ?? "Evento"}
+                </p>
+                {tooltipRelatedCount > 0 ? (
+                  <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400">
+                    {tooltipRelatedCount} relacionados
+                  </span>
+                ) : null}
+              </div>
+              <p className="mt-2 text-sm font-semibold leading-6 text-slate-950">
+                {getDisplayLabel(tooltipEvent)}
+              </p>
+              <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">
+                {formatEventDate(tooltipEvent)}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-slate-700">
+                {getTooltipSummary(tooltipEvent.summary)}
+              </p>
+            </div>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 });
