@@ -54,6 +54,12 @@ interface TimelineApi {
   ) => void;
 }
 
+interface VisTimelineDomItem {
+  data?: {
+    id?: string | number;
+  };
+}
+
 interface TooltipState {
   eventId: string;
   left: number;
@@ -284,6 +290,7 @@ export const TimelineView = memo(function TimelineView({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const timelineRef = useRef<TimelineApi | null>(null);
   const datasetConstructorRef = useRef<DataSetConstructor | null>(null);
+  const eventItemMapRef = useRef<Record<string, string[]>>({});
   const itemEventMapRef = useRef<Record<string, string>>({});
   const onSelectRef = useRef(onSelect);
   const eventsByIdRef = useRef<Record<string, TimelineEvent>>({});
@@ -309,6 +316,30 @@ export const TimelineView = memo(function TimelineView({
     () => Object.fromEntries(events.map((event) => [event.id, event])) as Record<string, TimelineEvent>,
     [events]
   );
+  const relatedEventMap = useMemo(() => {
+    const map: Record<string, string[]> = {};
+
+    for (const event of events) {
+      const relatedIds = new Set<string>();
+
+      for (const relatedEventId of getRelatedEventIds(event)) {
+        if (eventsById[relatedEventId]) {
+          relatedIds.add(relatedEventId);
+        }
+      }
+
+      for (const candidate of events) {
+        if (candidate.id !== event.id && candidate.relatedEventIds.includes(event.id)) {
+          relatedIds.add(candidate.id);
+        }
+      }
+
+      relatedIds.delete(event.id);
+      map[event.id] = Array.from(relatedIds);
+    }
+
+    return map;
+  }, [events, eventsById]);
 
   useEffect(() => {
     onSelectRef.current = onSelect;
@@ -322,8 +353,79 @@ export const TimelineView = memo(function TimelineView({
     setTooltip(null);
   }
 
+  function clearSemanticHighlights() {
+    if (!containerRef.current) {
+      return;
+    }
+
+    const highlightedElements = containerRef.current.querySelectorAll(
+      ".timeline-hover-source, .timeline-hover-related"
+    );
+
+    highlightedElements.forEach((element) => {
+      element.classList.remove("timeline-hover-source", "timeline-hover-related");
+    });
+  }
+
+  function getResolvedItemId(element: HTMLElement) {
+    if (element.dataset.id) {
+      return String(element.dataset.id);
+    }
+
+    const visItem = (element as HTMLElement & { "vis-item"?: VisTimelineDomItem })["vis-item"];
+
+    if (visItem?.data?.id !== undefined && visItem.data.id !== null) {
+      return String(visItem.data.id);
+    }
+
+    return null;
+  }
+
+  function setVisualHighlightState(itemId: string, className: "timeline-hover-source" | "timeline-hover-related") {
+    const itemElement = getTimelineItemElement(itemId);
+
+    if (!itemElement) {
+      return;
+    }
+
+    itemElement.classList.add(className);
+    itemElement.querySelector(".vis-dot")?.classList.add(className);
+  }
+
+  function applySemanticHighlights(eventId: string) {
+    if (!containerRef.current) {
+      return;
+    }
+
+    clearSemanticHighlights();
+
+    const sourceItemIds = eventItemMapRef.current[eventId] ?? [];
+
+    sourceItemIds.forEach((itemId) => {
+      setVisualHighlightState(itemId, "timeline-hover-source");
+    });
+
+    for (const relatedEventId of relatedEventMap[eventId] ?? []) {
+      for (const itemId of eventItemMapRef.current[relatedEventId] ?? []) {
+        setVisualHighlightState(itemId, "timeline-hover-related");
+      }
+    }
+  }
+
   function getTimelineItemElement(itemId: string) {
-    return containerRef.current?.querySelector<HTMLElement>(`[data-id="${itemId}"]`) ?? null;
+    if (!containerRef.current) {
+      return null;
+    }
+
+    const itemElements = containerRef.current.querySelectorAll<HTMLElement>(".vis-item");
+
+    for (const itemElement of itemElements) {
+      if (getResolvedItemId(itemElement) === itemId) {
+        return itemElement;
+      }
+    }
+
+    return null;
   }
 
   function updateTooltipFromElement(itemId: string, itemElement: HTMLElement) {
@@ -353,14 +455,14 @@ export const TimelineView = memo(function TimelineView({
       return;
     }
 
-    const itemElements = containerRef.current.querySelectorAll<HTMLElement>(
-      ".vis-item:not(.timeline-item-background)"
-    );
+      const itemElements = containerRef.current.querySelectorAll<HTMLElement>(
+        ".vis-item:not(.timeline-item-background)"
+      );
 
-    itemElements.forEach((itemElement) => {
-      const itemId = itemElement.dataset.id;
-      const eventId = itemId ? itemEventMapRef.current[itemId] : null;
-      const event = eventId ? eventsByIdRef.current[eventId] : null;
+      itemElements.forEach((itemElement) => {
+        const itemId = getResolvedItemId(itemElement);
+        const eventId = itemId ? itemEventMapRef.current[itemId] : null;
+        const event = eventId ? eventsByIdRef.current[eventId] : null;
 
       if (!itemId || !event) {
         return;
@@ -394,6 +496,7 @@ export const TimelineView = memo(function TimelineView({
 
       datasetConstructorRef.current = DataSet as DataSetConstructor;
       const builtData = buildItems(events);
+      eventItemMapRef.current = builtData.eventToItemIds;
       itemEventMapRef.current = builtData.itemToEventId;
 
       const timeline = new Timeline(
@@ -435,11 +538,16 @@ export const TimelineView = memo(function TimelineView({
       timeline.on("select", (properties) => {
         const selectedItemId = getPrimaryTimelineItemId(properties);
         const selectedId = selectedItemId ? itemEventMapRef.current[selectedItemId] : null;
+        clearSemanticHighlights();
         hideTooltip();
         onSelectRef.current(selectedId ?? null);
 
         window.requestAnimationFrame(() => {
           timeline.setSelection([], { animation: false });
+
+          if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+          }
         });
       });
 
@@ -458,10 +566,16 @@ export const TimelineView = memo(function TimelineView({
 
         if (itemElement instanceof HTMLElement) {
           updateTooltipFromElement(itemId, itemElement);
+          const eventId = itemEventMapRef.current[itemId];
+
+          if (eventId) {
+            applySemanticHighlights(eventId);
+          }
         }
       });
 
       timeline.on("itemout", () => {
+        clearSemanticHighlights();
         hideTooltip();
       });
 
@@ -490,6 +604,7 @@ export const TimelineView = memo(function TimelineView({
           }
 
           hideTooltip();
+          clearSemanticHighlights();
           window.requestAnimationFrame(decorateInteractiveItems);
         }
       });
@@ -531,10 +646,16 @@ export const TimelineView = memo(function TimelineView({
 
         if (itemId) {
           updateTooltipFromElement(itemId, itemElement);
+          const eventId = itemEventMapRef.current[itemId];
+
+          if (eventId) {
+            applySemanticHighlights(eventId);
+          }
         }
       };
 
       const handleFocusOut = () => {
+        clearSemanticHighlights();
         hideTooltip();
       };
 
@@ -586,11 +707,12 @@ export const TimelineView = memo(function TimelineView({
       }
 
       removeKeyboardSupport?.();
+      clearSemanticHighlights();
       hideTooltip();
       timelineRef.current?.destroy();
       timelineRef.current = null;
     };
-  }, [events, fullRangeMs, minimumVisibleMs, rangeEnd, rangeStart, rangeStartMs]);
+  }, [events, fullRangeMs, minimumVisibleMs, rangeEnd, rangeStart, rangeStartMs, relatedEventMap]);
 
   useEffect(() => {
     if (!timelineRef.current || !datasetConstructorRef.current) {
@@ -598,9 +720,11 @@ export const TimelineView = memo(function TimelineView({
     }
 
     const builtData = buildItems(events);
+    eventItemMapRef.current = builtData.eventToItemIds;
     itemEventMapRef.current = builtData.itemToEventId;
     const DataSet = datasetConstructorRef.current;
     timelineRef.current.setItems(new DataSet(builtData.items));
+    clearSemanticHighlights();
     hideTooltip();
     window.requestAnimationFrame(decorateInteractiveItems);
   }, [events]);

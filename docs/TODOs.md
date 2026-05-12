@@ -2,15 +2,6 @@
 
 ## Prioridad alta
 
-- Rehacer el hover/focus semántico de eventos relacionados.
-  - Pedido explícito del proyecto: no improvisarlo si rompe legibilidad.
-  - Objetivo futuro:
-    - destacar evento actual
-    - destacar `relatedEventIds`
-    - atenuar de forma leve lo no relacionado
-    - mantenerlo estable dentro de cada bloque histórico
-  - Restricción: tiene que sentirse editorial y no “romper” la visualización.
-
 - Reemplazar `ieee-integrated-circuit` por una fuente primaria o institucional más sólida.
   - Estado actual: apunta a Wikipedia.
   - Impacto: es la referencia más débil del dataset en términos académicos.
@@ -65,6 +56,13 @@
     - enciclopedia
 
 ## Prioridad baja
+
+- Refinar la intensidad del hover/focus semántico.
+  - Estado actual: ya destaca evento actual y relacionados con escala/sombra leve.
+  - Ajustes posibles:
+    - calibrar intensidad por categoría
+    - decidir si conviene resaltar también relaciones inversas
+    - revisar casos de bandas contextuales largas
 
 - Unificar criterio editorial en títulos de fuentes.
   - Hoy conviven títulos muy literales del enlace real con títulos más normalizados.
