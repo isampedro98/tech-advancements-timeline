@@ -32,6 +32,13 @@
   - Estado actual: al estar muy cerca del borde izquierdo, su label sigue viéndose mal posicionado.
   - Sugerencia: tratarlo como excepción visual explícita o permitir un offset dependiente del viewport.
 
+- Revisar la presentación de la bibliografía general.
+  - Estado actual: la sección completa queda demasiado expuesta y mete ruido visual al final de la página.
+  - Alternativas a evaluar:
+    - dejarla colapsada por defecto
+    - moverla a una vista/pantalla separada
+    - abrirla en modal o panel secundario
+
 - Normalizar `sourceIds` cuyos nombres ya no coinciden con el publisher o el título real.
   - Casos visibles:
     - `historian-cold-war` ahora apunta a The National WWII Museum
