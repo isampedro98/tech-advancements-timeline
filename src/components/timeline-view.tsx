@@ -190,11 +190,7 @@ function getItemClassName(event: TimelineEvent, baseClassName: string) {
 }
 
 function getContextLabelClassName(event: TimelineEvent, baseClassName: string) {
-  if (event.id === "cold-war") {
-    return `${baseClassName} timeline-item-context-label timeline-item-context-label--cold-war`;
-  }
-
-  return `${baseClassName} timeline-item-context-label`;
+  return `${baseClassName} timeline-item-context-label timeline-item--external-point`;
 }
 
 function getEventAriaLabel(event: TimelineEvent) {
