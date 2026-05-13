@@ -103,6 +103,7 @@ export function EventDetailsPanel({
                   href={source.url}
                   target="_blank"
                   rel="noreferrer"
+                  title={source.fullTitle ?? source.title}
                   className="block rounded-2xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-400"
                 >
                   <p className="text-sm font-semibold text-slate-900">{source.title}</p>

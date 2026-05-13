@@ -58,7 +58,12 @@ export function Bibliography() {
                   </span>
                 </div>
                 <p className="mt-2 text-sm leading-6 text-slate-800">
-                  <span className="italic text-slate-950">{source.title}</span>
+                  <span
+                    className="italic text-slate-950"
+                    title={source.fullTitle ?? source.title}
+                  >
+                    {source.title}
+                  </span>
                   {"."}
                 </p>
                 <a

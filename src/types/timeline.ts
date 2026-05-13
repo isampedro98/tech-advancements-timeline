@@ -28,6 +28,7 @@ export type SourceKind =
 export interface TimelineSource {
   id: string;
   title: string;
+  fullTitle?: string;
   publisher: string;
   kind: SourceKind;
   url: string;
