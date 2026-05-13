@@ -1,6 +1,6 @@
 "use client";
 
-import { sourceMap } from "@/data/sources";
+import { sourceKindLabels, sourceMap } from "@/data/sources";
 import { categoryMeta, eventMap } from "@/data/events";
 import { formatEventDate } from "@/lib/date";
 import type { TimelineEvent } from "@/types/timeline";
@@ -106,9 +106,14 @@ export function EventDetailsPanel({
                   className="block rounded-2xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-400"
                 >
                   <p className="text-sm font-semibold text-slate-900">{source.title}</p>
-                  <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-500">
-                    {source.publisher}
-                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      {sourceKindLabels[source.kind]}
+                    </span>
+                    <p className="text-xs uppercase tracking-[0.16em] text-slate-500">
+                      {source.publisher}
+                    </p>
+                  </div>
                 </a>
               ))}
             </div>

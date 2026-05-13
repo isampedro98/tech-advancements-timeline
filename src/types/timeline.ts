@@ -13,10 +13,23 @@ export type EventCategoryId =
 
 export type EventType = "range" | "point";
 
+export type SourceKind =
+  | "museo"
+  | "enciclopedia"
+  | "archivo"
+  | "organismo-estatal"
+  | "think-tank"
+  | "alianza-intergubernamental"
+  | "agencia-espacial"
+  | "academia"
+  | "industria"
+  | "agencia-defensa";
+
 export interface TimelineSource {
   id: string;
   title: string;
   publisher: string;
+  kind: SourceKind;
   url: string;
 }
 

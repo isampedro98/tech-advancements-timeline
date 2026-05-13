@@ -93,7 +93,7 @@ export const events: TimelineEvent[] = [
     summary:
       "La radio inalámbrica pasó de ser un recurso especializado a una capacidad militar estándar para coordinación en campo, señales navales y redes de mando.",
     relatedEventIds: ["ww1"],
-    sourceIds: ["ieee-radio", "iwm-ww1"]
+    sourceIds: ["ieee-history-wireless", "iwm-ww1"]
   },
   {
     id: "military-aviation-ww1",
@@ -121,7 +121,7 @@ export const events: TimelineEvent[] = [
     summary:
       "La aparición del tanque introdujo movilidad blindada, protección y potencia de fuego sobre el campo de batalla, anticipando la guerra mecanizada del siglo XX.",
     relatedEventIds: ["ww1", "gulf-war"],
-    sourceIds: ["tankmuseum-first-tank", "iwm-ww1"]
+    sourceIds: ["tank-museum-first-tank-action", "iwm-ww1"]
   },
   {
     id: "broadcast-radio-era",
@@ -135,7 +135,7 @@ export const events: TimelineEvent[] = [
     summary:
       "La radio se consolidó como medio de masas en la entreguerra, creando redes de información, propaganda y cultura de alcance nacional e internacional.",
     relatedEventIds: ["military-radio", "ww2"],
-    sourceIds: ["britannica-radio", "ieee-radio"]
+    sourceIds: ["britannica-radio", "ieee-history-wireless"]
   },
   {
     id: "civil-aviation-interwar",
@@ -149,7 +149,7 @@ export const events: TimelineEvent[] = [
     summary:
       "La aviación civil y la infraestructura aérea crecieron de forma sostenida entre guerras, trasladando innovaciones militares al transporte, correo y conectividad internacional.",
     relatedEventIds: ["military-aviation-ww1", "jet-propulsion-ww2"],
-    sourceIds: ["raf-aviation-timeline", "iwm-ww1-air"]
+    sourceIds: ["raf-museum-aviation-timeline", "iwm-ww1-air"]
   },
   {
     id: "ww2",
@@ -184,7 +184,7 @@ export const events: TimelineEvent[] = [
     summary:
       "El radar maduró como tecnología decisiva de vigilancia y defensa aérea, transformando la intercepción, la guerra naval y los sistemas de alerta temprana.",
     relatedEventIds: ["ww2"],
-    sourceIds: ["nps-radar", "britannica-ww2"]
+    sourceIds: ["iwm-radar-ww2", "britannica-ww2"]
   },
   {
     id: "jet-propulsion-ww2",
@@ -198,7 +198,7 @@ export const events: TimelineEvent[] = [
     summary:
       "La guerra aceleró el paso desde la aviación a hélice hacia la propulsión a reacción, abriendo una nueva etapa en velocidad, altitud y diseño aeronáutico.",
     relatedEventIds: ["ww2", "military-aviation-ww1"],
-    sourceIds: ["raf-jet-engine", "britannica-ww2"]
+    sourceIds: ["raf-museum-jet-engine", "britannica-ww2"]
   },
   {
     id: "v2-rocketry",
@@ -226,7 +226,7 @@ export const events: TimelineEvent[] = [
     summary:
       "La investigación militar a gran escala integró física, ingeniería e industria, estableciendo un modelo para programas tecnológicos estratégicos de posguerra.",
     relatedEventIds: ["ww2", "cold-war"],
-    sourceIds: ["energy-manhattan", "britannica-ww2"]
+    sourceIds: ["nps-manhattan-project", "britannica-ww2"]
   },
   {
     id: "colossus",
@@ -267,7 +267,7 @@ export const events: TimelineEvent[] = [
     summary:
       "Período prolongado de competencia bipolar, contención y rivalidad militar, tecnológica, ideológica y geopolítica entre Estados Unidos y la Unión Soviética.",
     relatedEventIds: ["transistor", "manhattan-project", "sputnik-crisis"],
-    sourceIds: ["historian-cold-war"]
+    sourceIds: ["nwwii-cold-conflict"]
   },
   {
     id: "transistor",
@@ -279,7 +279,7 @@ export const events: TimelineEvent[] = [
     summary:
       "El transistor se convirtió en la base de la miniaturización electrónica, la computación, las comunicaciones y la aceleración digital de largo plazo.",
     relatedEventIds: ["cold-war", "integrated-circuit", "personal-computing"],
-    sourceIds: ["ieee-transistor"]
+    sourceIds: ["bell-labs-transistor-75"]
   },
   {
     id: "korean-war",
@@ -292,7 +292,7 @@ export const events: TimelineEvent[] = [
     summary:
       "Uno de los primeros grandes conflictos armados de la Guerra Fría, que mostró cómo la rivalidad entre superpotencias podía librarse en escenarios regionales.",
     relatedEventIds: ["cold-war", "sputnik-crisis"],
-    sourceIds: ["britannica-korean-war", "historian-cold-war"]
+    sourceIds: ["britannica-korean-war", "nwwii-cold-conflict"]
   },
   {
     id: "sputnik-crisis",
@@ -306,7 +306,7 @@ export const events: TimelineEvent[] = [
     summary:
       "La carrera espacial fue un proceso prolongado de competencia geopolítica, tecnológica y simbólica entre superpotencias, estrechamente ligado a la lógica estratégica de la Guerra Fría.",
     relatedEventIds: ["sputnik", "cold-war", "apollo-program", "gps-origins"],
-    sourceIds: ["nasa-sputnik", "nasa-apollo", "historian-cold-war"]
+    sourceIds: ["nasa-sputnik", "nasa-apollo", "nwwii-cold-conflict"]
   },
   {
     id: "sputnik",
@@ -345,7 +345,7 @@ export const events: TimelineEvent[] = [
     summary:
       "El circuito integrado volvió viables los sistemas electrónicos escalables y permitió equipos más pequeños para guiado, comunicaciones y cómputo.",
     relatedEventIds: ["transistor", "personal-computing", "arpanet"],
-    sourceIds: ["ieee-integrated-circuit", "ieee-transistor"]
+    sourceIds: ["wikipedia-integrated-circuit", "bell-labs-transistor-75"]
   },
   {
     id: "cuban-missile-crisis",
@@ -358,7 +358,7 @@ export const events: TimelineEvent[] = [
     summary:
       "Una confrontación nuclear breve pero aguda que expuso las presiones de mando y control en la era termonuclear.",
     relatedEventIds: ["cold-war", "manhattan-project"],
-    sourceIds: ["jfk-cuban-missile-crisis", "historian-cold-war"]
+    sourceIds: ["jfk-cuban-missile-crisis", "nwwii-cold-conflict"]
   },
   {
     id: "vietnam-war",
@@ -371,7 +371,7 @@ export const events: TimelineEvent[] = [
     summary:
       "Un conflicto proxy prolongado que expandió la vigilancia, la movilidad aérea y la planificación militar apoyada en datos bajo condiciones de Guerra Fría.",
     relatedEventIds: ["arpanet", "cold-war"],
-    sourceIds: ["britannica-vietnam-war", "historian-cold-war"]
+    sourceIds: ["britannica-vietnam-war", "nwwii-cold-conflict"]
   },
   {
     id: "arpanet",
@@ -383,7 +383,7 @@ export const events: TimelineEvent[] = [
     summary:
       "ARPANET demostró la conmutación de paquetes y se convirtió en un hito fundacional para la futura Internet.",
     relatedEventIds: ["vietnam-war", "world-wide-web"],
-    sourceIds: ["arpa-arpanet"]
+    sourceIds: ["darpa-arpanet"]
   },
   {
     id: "gps-origins",
@@ -396,7 +396,7 @@ export const events: TimelineEvent[] = [
     summary:
       "El programa Navstar GPS consolidó la navegación satelital como sistema estratégico para sincronización, guiado, precisión y movilidad.",
     relatedEventIds: ["sputnik", "sputnik-crisis", "gps-civilian"],
-    sourceIds: ["space-force-gps", "nasa-sputnik"]
+    sourceIds: ["aerospace-brief-history-gps", "nasa-sputnik"]
   },
   {
     id: "personal-computing",
@@ -410,7 +410,7 @@ export const events: TimelineEvent[] = [
     summary:
       "Los microprocesadores y el hardware de consumo expandieron la capacidad digital más allá del Estado y de las grandes instituciones, ampliando la base social del cómputo.",
     relatedEventIds: ["integrated-circuit", "world-wide-web"],
-    sourceIds: ["ieee-transistor", "ieee-integrated-circuit"]
+    sourceIds: ["bell-labs-transistor-75", "wikipedia-integrated-circuit"]
   },
   {
     id: "soviet-afghan-war",
@@ -423,7 +423,7 @@ export const events: TimelineEvent[] = [
     summary:
       "Un conflicto proxy de la etapa final de la Guerra Fría que mostró los efectos geopolíticos de insurgencias prolongadas con apoyo externo.",
     relatedEventIds: ["cold-war", "drone-warfare"],
-    sourceIds: ["britannica-soviet-afghan", "historian-cold-war"]
+    sourceIds: ["britannica-soviet-afghan", "nwwii-cold-conflict"]
   },
   {
     id: "berlin-wall-fall",
@@ -435,7 +435,7 @@ export const events: TimelineEvent[] = [
     summary:
       "La apertura del Muro de Berlín funcionó como hito simbólico del colapso del bloque soviético y de la fase final de la Guerra Fría.",
     relatedEventIds: ["cold-war", "world-wide-web"],
-    sourceIds: ["britannica-berlin-wall", "historian-cold-war"]
+    sourceIds: ["britannica-berlin-wall", "nwwii-cold-conflict"]
   },
   {
     id: "world-wide-web",
@@ -449,7 +449,7 @@ export const events: TimelineEvent[] = [
     summary:
       "La Web volvió ampliamente accesible el acceso a información en red y transformó Internet en un medio de comunicación de masas.",
     relatedEventIds: ["arpanet", "gps-civilian", "stuxnet"],
-    sourceIds: ["cern-www", "arpa-arpanet"]
+    sourceIds: ["cern-web-history", "darpa-arpanet"]
   },
   {
     id: "gulf-war",
@@ -462,7 +462,7 @@ export const events: TimelineEvent[] = [
     summary:
       "Un conflicto breve frecuentemente citado por el uso de ataques de precisión, navegación satelital y visibilidad mediática en tiempo real.",
     relatedEventIds: ["gps-civilian", "gps-origins"],
-    sourceIds: ["historian-gulf-war", "space-force-gps"]
+    sourceIds: ["office-historian-gulf-war", "aerospace-brief-history-gps"]
   },
   {
     id: "gps-civilian",
@@ -476,7 +476,7 @@ export const events: TimelineEvent[] = [
     summary:
       "La entrada en operación plena del GPS y la eliminación de la Selective Availability llevaron la navegación satelital a la logística, el transporte y la vida cotidiana.",
     relatedEventIds: ["gps-origins", "gulf-war", "drone-warfare"],
-    sourceIds: ["space-force-gps"]
+    sourceIds: ["aerospace-brief-history-gps"]
   },
   {
     id: "war-on-terror",
@@ -517,7 +517,7 @@ export const events: TimelineEvent[] = [
     summary:
       "Stuxnet hizo visible públicamente el sabotaje cibernético como instrumento estratégico capaz de afectar infraestructura física.",
     relatedEventIds: ["hybrid-conflict-era", "war-on-terror"],
-    sourceIds: ["symantec-stuxnet", "nato-hybrid"]
+    sourceIds: ["national-security-archive-stuxnet", "nato-hybrid"]
   },
   {
     id: "hybrid-conflict-era",
@@ -562,7 +562,7 @@ export const events: TimelineEvent[] = [
     summary:
       "El aprendizaje automático, la autonomía y los sistemas de apoyo a decisiones influyen cada vez más en inteligencia, targeting, logística y planificación defensiva.",
     relatedEventIds: ["hybrid-conflict-era", "russo-ukrainian-war", "generative-ai"],
-    sourceIds: ["nato-ai", "stanford-ai-index"]
+    sourceIds: ["nato-ai-strategy", "stanford-hai-ai-index"]
   },
   {
     id: "generative-ai",
@@ -577,7 +577,7 @@ export const events: TimelineEvent[] = [
     summary:
       "Los modelos generativos aceleraron los medios sintéticos, la automatización del trabajo cognitivo y el debate sobre cómo la IA transforma defensa, inteligencia y operaciones informacionales.",
     relatedEventIds: ["ai-autonomy", "hybrid-conflict-era"],
-    sourceIds: ["stanford-ai-index", "nato-ai"]
+    sourceIds: ["stanford-hai-ai-index", "nato-ai-strategy"]
   }
 ];
 

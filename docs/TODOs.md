@@ -19,22 +19,6 @@
 
 ## Prioridad media
 
-- Revisar la presentación de la bibliografía general.
-  - Estado actual: la sección completa queda demasiado expuesta y mete ruido visual al final de la página.
-  - Alternativas a evaluar:
-    - dejarla colapsada por defecto
-    - moverla a una vista/pantalla separada
-    - abrirla en modal o panel secundario
-
-- Normalizar `sourceIds` cuyos nombres ya no coinciden con el publisher o el título real.
-  - Casos visibles:
-    - `historian-cold-war` ahora apunta a The National WWII Museum
-    - `nps-radar` ahora apunta a Imperial War Museums
-    - `ieee-transistor` ahora apunta a Nokia Bell Labs
-    - `space-force-gps` ahora apunta a The Aerospace Corporation
-    - `symantec-stuxnet` ya no apunta a Symantec
-  - Impacto: no rompe la app, pero dificulta mantenimiento y lectura del dataset.
-
 - Revisar si conviene actualizar algunos textos de resumen para alinearlos mejor con las nuevas fuentes.
   - Casos a mirar primero:
     - `Transistor`
@@ -42,14 +26,6 @@
     - `Stuxnet y la visibilidad de la ciberguerra`
     - `Guerra Fría`
     - `Expansión de la guerra con drones`
-
-- Evaluar si la bibliografía general debería indicar tipo de fuente.
-  - Ejemplos:
-    - museo
-    - archivo
-    - organismo estatal
-    - think tank
-    - enciclopedia
 
 ## Prioridad baja
 

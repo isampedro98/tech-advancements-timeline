@@ -1,10 +1,16 @@
 import { events } from "@/data/events";
-import { sourceMap } from "@/data/sources";
+import { sourceKindLabels, sourceMap } from "@/data/sources";
 
 const bibliographyEntries = Array.from(new Set(events.flatMap((event) => event.sourceIds)))
   .map((sourceId) => sourceMap[sourceId])
   .filter(Boolean)
   .sort((left, right) => {
+    const kindCompare = sourceKindLabels[left.kind].localeCompare(sourceKindLabels[right.kind], "es");
+
+    if (kindCompare !== 0) {
+      return kindCompare;
+    }
+
     const publisherCompare = left.publisher.localeCompare(right.publisher, "es");
 
     if (publisherCompare !== 0) {
@@ -43,10 +49,16 @@ export function Bibliography() {
               </span>
 
               <div className="min-w-0 flex-1">
-                <p className="text-sm leading-6 text-slate-800">
-                  <span className="font-semibold text-slate-950">{source.publisher}</span>
-                  {". "}
-                  <span className="italic">{source.title}</span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    {sourceKindLabels[source.kind]}
+                  </span>
+                  <span className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                    {source.publisher}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-slate-800">
+                  <span className="italic text-slate-950">{source.title}</span>
                   {"."}
                 </p>
                 <a
