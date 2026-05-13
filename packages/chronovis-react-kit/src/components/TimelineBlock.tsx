@@ -735,24 +735,22 @@ export const TimelineBlock = memo(function TimelineBlock({
   const tooltipRelatedCount = tooltipEvent ? getRelatedEventIds(tooltipEvent).length : 0;
 
   return (
-    <div className="rounded-[1.75rem] border border-line bg-panel p-5 shadow-panel lg:p-6">
-      <div className="mb-4 flex items-center justify-between gap-3">
+    <div className="chronovis-block">
+      <div className="chronovis-block__header">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-            {title}
-          </p>
-          <p className="mt-1 text-sm text-slate-600">{description}</p>
+          <p className="chronovis-block__eyebrow">{title}</p>
+          <p className="chronovis-block__description">{description}</p>
         </div>
       </div>
 
       {contextNote ? (
-        <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-3 text-sm leading-7 text-amber-950">
+        <div className="chronovis-block__context-note">
           {contextNote}
         </div>
       ) : null}
 
-      <div className="mb-4 rounded-2xl border border-slate-200 bg-white/75 px-4 py-3">
-        <div className="flex items-center justify-between gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+      <div className="chronovis-block__window-panel">
+        <div className="chronovis-block__window-headings">
           <span>Izquierda</span>
           <span>Desplazamiento temporal</span>
           <span>Derecha</span>
@@ -764,21 +762,21 @@ export const TimelineBlock = memo(function TimelineBlock({
           step={1}
           value={windowPositionValue}
           onChange={(event) => handleWindowPositionChange(Number(event.target.value))}
-          className="mt-3 h-2 w-full cursor-pointer accent-slate-700"
+          className="chronovis-block__window-slider"
           aria-label={`Desplazamiento temporal de ${title}`}
         />
-        <div className="mt-3 flex items-center justify-between gap-3 text-sm text-slate-600">
+        <div className="chronovis-block__window-labels">
           <span>{windowLabel.start}</span>
           <span>Ventana visible</span>
           <span>{windowLabel.end}</span>
         </div>
       </div>
 
-      <div className="overflow-x-auto pb-1">
-        <div ref={surfaceFrameRef} className="relative min-w-[960px]">
+      <div className="chronovis-block__canvas-scroll">
+        <div ref={surfaceFrameRef} className="chronovis-block__canvas-frame">
           <div
             ref={containerRef}
-            className="timeline-surface h-[500px] w-full overflow-hidden rounded-[1.4rem] border border-slate-200 bg-white lg:h-[540px]"
+            className="timeline-surface chronovis-block__canvas"
           />
 
           {tooltip && tooltipEvent ? (

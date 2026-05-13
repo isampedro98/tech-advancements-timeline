@@ -5,8 +5,7 @@ const config: Config = {
     "./src/app/**/*.{ts,tsx}",
     "./src/components/**/*.{ts,tsx}",
     "./src/data/**/*.{ts,tsx}",
-    "./src/lib/**/*.{ts,tsx}",
-    "./packages/chronovis-react-kit/src/**/*.{ts,tsx}"
+    "./src/lib/**/*.{ts,tsx}"
   ],
   theme: {
     extend: {

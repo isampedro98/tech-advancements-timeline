@@ -19,52 +19,40 @@ export function TimelineLegend({
   const technologyCategories = categories.filter((category) => category.track === "technology");
 
   return (
-    <section className="rounded-2xl border border-line bg-panel p-5 shadow-panel">
-      <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-          {title}
-        </p>
-        <p className="text-sm text-slate-600">{description}</p>
+    <section className="chronovis-legend">
+      <div className="chronovis-legend__intro">
+        <p className="chronovis-legend__title">{title}</p>
+        <p className="chronovis-legend__description">{description}</p>
       </div>
 
-      <div className="mt-5 grid gap-6 lg:grid-cols-2">
+      <div className="chronovis-legend__grid">
         <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-            {warsHeading}
-          </p>
-          <div className="space-y-3">
+          <p className="chronovis-legend__column-title">{warsHeading}</p>
+          <div className="chronovis-legend__items">
             {warCategories.map((category) => (
-              <div
-                key={category.id}
-                className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-3"
-              >
+              <div key={category.id} className="chronovis-legend__item">
                 <span
                   aria-hidden
-                  className="h-4 w-4 rounded-full border border-black/10"
+                  className="chronovis-legend__swatch"
                   style={{ backgroundColor: category.color }}
                 />
-                <p className="text-sm font-semibold text-slate-900">{category.label}</p>
+                <p className="chronovis-legend__label">{category.label}</p>
               </div>
             ))}
           </div>
         </div>
 
         <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-            {technologyHeading}
-          </p>
-          <div className="space-y-3">
+          <p className="chronovis-legend__column-title">{technologyHeading}</p>
+          <div className="chronovis-legend__items">
             {technologyCategories.map((category) => (
-              <div
-                key={category.id}
-                className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-3"
-              >
+              <div key={category.id} className="chronovis-legend__item">
                 <span
                   aria-hidden
-                  className="h-4 w-4 rounded-full border border-black/10"
+                  className="chronovis-legend__swatch"
                   style={{ backgroundColor: category.color }}
                 />
-                <p className="text-sm font-semibold text-slate-900">{category.label}</p>
+                <p className="chronovis-legend__label">{category.label}</p>
               </div>
             ))}
           </div>

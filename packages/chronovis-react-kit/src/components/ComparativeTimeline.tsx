@@ -126,17 +126,15 @@ export function ComparativeTimeline({
     : [];
 
   return (
-    <div className="space-y-6">
+    <div className="chronovis-comparative">
       {showBibliography ? (
-        <section className="rounded-2xl border border-line bg-panel p-3 shadow-panel">
-          <div className="flex flex-wrap gap-2">
+        <section className="chronovis-tabs-panel">
+          <div className="chronovis-tabs">
             <button
               type="button"
               onClick={() => setActiveTab("timeline")}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                activeTab === "timeline"
-                  ? "bg-slate-900 text-white shadow-sm"
-                  : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900"
+              className={`chronovis-tab ${
+                activeTab === "timeline" ? "chronovis-tab--active" : ""
               }`}
             >
               {timelineTabLabel}
@@ -147,10 +145,8 @@ export function ComparativeTimeline({
                 setActiveTab("bibliography");
                 setSelectedEventId(null);
               }}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                activeTab === "bibliography"
-                  ? "bg-slate-900 text-white shadow-sm"
-                  : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900"
+              className={`chronovis-tab ${
+                activeTab === "bibliography" ? "chronovis-tab--active" : ""
               }`}
             >
               {bibliographyTabLabel}

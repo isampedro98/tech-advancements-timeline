@@ -1,346 +1,107 @@
 # Roadmap De Librería Pública
 
-## Idea
-
-Convertir la solución actual en una librería pública de `React` para construir timelines comparativas, editoriales e históricas sobre `vis-timeline`, manteniendo una app demo en `Next.js`.
-
-### Nombre tentativo
+## Nombre
 
 - paquete: `chronovis-react-kit`
 - tagline: `React toolkit for comparative historical and editorial timelines`
 
-La librería no debería venderse como “otra timeline genérica”, sino como una herramienta para:
+## Qué Es
 
-- visualizaciones históricas comparativas
-- timelines multicapa
-- bloques temporales
+`chronovis-react-kit` busca ser una librería de `React` para timelines comparativas, históricas y editoriales sobre `vis-timeline`.
+
+No apunta a roadmaps corporativos genéricos, sino a visualizaciones con:
+
+- múltiples grupos o tracks
+- bloques históricos
 - labels internos y externos
-- tooltips editoriales
-- detalle contextual por evento
+- tooltip editorial
+- modal de detalle
+- leyenda opcional
+- bibliografía opcional
 
-## Posicionamiento
+## Estado Actual
 
-Propuesta de valor tentativa:
+Hoy el repo ya está dividido conceptualmente en:
 
-> React timeline toolkit for comparative historical and editorial visualizations.
+### 1. Paquete reusable
 
-Eso la diferencia de:
+`packages/chronovis-react-kit`
 
-- wrappers mínimos de `vis-timeline`
-- roadmaps corporativos
-- timelines demasiado genéricas
+Incluye:
 
-## Objetivo V1
+- tipos base
+- helpers de fechas, labels y períodos
+- `TimelineBlock`
+- `TimelineModal`
+- `TimelineLegend`
+- `SourcesBibliography`
+- `ComparativeTimeline`
+- estilos base del kit en `styles/base.css`
 
-Publicar una primera versión usable por terceros, con:
+### 2. App demo
 
-- API simple basada en datos
-- defaults visuales sólidos
-- integración encapsulada con `vis-timeline`
-- estilos reutilizables
-- demo real en `Next.js`
-- documentación clara
+`src/`
 
-## Qué No Debe Ser
+Queda principalmente para:
 
-- no debe depender de `Next.js`
-- no debe incluir backend
-- no debe forzar una sola estética
-- no debe quedar acoplada al dataset actual
-- no debe exigir demasiada configuración para el caso simple
+- dataset local (`events`, `sources`)
+- copy editorial
+- `ProjectIntro`
+- composición demo que consume el paquete
 
-## Arquitectura Recomendada
+## API Pública Objetivo
 
-Separar en dos capas:
-
-### 1. Librería React
-
-Responsable de:
-
-- tipos
-- helpers
-- adapters de datos
-- integración con `vis-timeline`
-- componentes reutilizables
-- estilos base
-
-### 2. App Demo
-
-Responsable de:
-
-- mostrar ejemplos reales
-- servir como documentación viva
-- validar casos de uso
-- actuar como sandbox visual
-
-## Estructura Tentativa
-
-```text
-/
-  apps/
-    demo-next/
-  packages/
-    chronovis-react-kit/
-      src/
-        components/
-          TimelineCanvas.tsx
-          TimelineBlock.tsx
-          TimelineTooltip.tsx
-          TimelineModal.tsx
-          TimelineLegend.tsx
-          SourcesBibliography.tsx
-        hooks/
-          useTimelineInstance.ts
-          useTimelineTooltip.ts
-        lib/
-          build-items.ts
-          labels.ts
-          ranges.ts
-          relations.ts
-        styles/
-          base.css
-        types/
-          timeline.ts
-        index.ts
-```
-
-## API Pública Inicial
-
-La API v1 debería ser chica.
+La API de v1 debería mantenerse chica.
 
 ### Componente alto nivel
 
 ```tsx
 <ComparativeTimeline
+  categories={categories}
   events={events}
-  periods={periods}
   groups={groups}
-  onEventSelect={handleSelect}
+  periods={periods}
+  sources={sources}
+  sourceKindLabels={sourceKindLabels}
 />
 ```
 
 ### Tipos base
 
 - `TimelineEvent`
+- `TimelineSource`
 - `TimelineGroup`
 - `TimelinePeriod`
 - `TimelineCategory`
 
-### Props configurables
+## Criterios De V1
 
-- `events`
-- `groups`
-- `periods`
-- `categories`
-- `defaultZoom`
-- `renderTooltip`
-- `renderEventDetails`
-- `renderLegend`
-- `renderBibliography`
-- `theme`
+La primera versión pública debería:
 
-## Niveles De Uso
+- no depender de `Next.js`
+- tener defaults visuales sólidos
+- encapsular bien `vis-timeline`
+- permitir override progresivo
+- venir con demo funcional
+- incluir estilos base reutilizables
 
-La librería debería ofrecer dos modos:
+## Qué Falta
 
-### Modo simple
+Los próximos pasos reales son estos:
 
-El usuario pasa:
+1. Consolidar todavía más estilos dentro del paquete y reducir aún más la dependencia del demo.
+2. Revisar la API pública para que no exponga decisiones demasiado atadas a este dataset.
+3. Separar la demo a una estructura tipo `apps/demo-next` cuando convenga.
+4. Preparar documentación mínima de publicación:
+   - instalación
+   - quick start
+   - ejemplo simple
+   - ejemplo comparativo
+   - theming
+   - componentes opcionales
+5. Recién después evaluar publicación real en npm / GitHub.
 
-- eventos
-- grupos
-- períodos
+## Principio Rector
 
-y obtiene:
-
-- timeline funcional
-- labels bien resueltos
-- tooltip
-- modal
-- leyenda opcional
-- bibliografía opcional
-
-### Modo avanzado
-
-El usuario puede overridear:
-
-- rendering de labels
-- tooltip
-- modal
-- legend
-- bibliography
-- color mapping
-- spacing
-- reglas de narrow/external labels
-
-## Componentes Que Ya Existen Implícitamente
-
-La app actual ya insinúa estas piezas:
-
-- `TimelineBlock`
-- `TimelineModal`
-- `TimelineLegend`
-- `ComparativeTimelineDemo`
-- `SourcesBibliography`
-- helpers de fechas
-- dataset tipado
-- separación entre eventos, fuentes y categorías
-
-Eso facilita mucho la futura extracción.
-
-## Orden De Extracción
-
-### Etapa 1. Estabilizar la app actual
-
-Antes de extraer:
-
-- terminar edge cases visuales
-- estabilizar labels
-- estabilizar tooltip
-- decidir hover/focus relacional
-- mejorar bibliografía
-- limpiar naming interno
-
-### Etapa 2. Congelar modelo de datos
-
-Definir qué tipos pasan a ser públicos:
-
-- `TimelineEvent`
-- `TimelineSource`
-- `CategoryMeta`
-- `TimelineGroupId`
-- `EventCategoryId`
-
-Y decidir qué queda privado.
-
-### Etapa 3. Extraer helpers puros
-
-Mover primero lógica sin UI:
-
-- formateo de fechas
-- detección de eventos angostos
-- reglas de labels
-- construcción de items para `vis-timeline`
-
-### Etapa 4. Extraer integración con vis-timeline
-
-Encapsular:
-
-- init
-- cleanup
-- update de items
-- tooltips
-- keyboard support
-- slider de desplazamiento temporal
-
-### Etapa 5. Extraer componentes presentacionales
-
-- tooltip
-- modal
-- legend
-- bibliography
-- intro/notes solo si aportan valor reusable
-
-### Etapa 6. Montar demo separada
-
-La app actual puede convertirse en:
-
-- `apps/demo-next`
-
-y consumir el paquete local.
-
-## API De Datos Sugerida
-
-El modelo actual es bastante bueno. V1 podría quedar cerca de esto:
-
-```ts
-type TimelineEvent = {
-  id: string;
-  title: string;
-  shortTitle?: string;
-  group: string;
-  category: string;
-  type: "point" | "range";
-  start: string;
-  end?: string;
-  summary: string;
-  relatedEventIds: string[];
-  sourceIds?: string[];
-  isOngoing?: boolean;
-  renderAsContextBand?: boolean;
-};
-```
-
-## Temas / Theming
-
-Conviene que v1 soporte:
-
-- colores por categoría
-- radios
-- tipografía
-- fondo de tooltip
-- estilo de labels externos
-- altura de tracks
-- visibilidad opcional de leyenda y bibliografía
-
-Idealmente con:
-
-- CSS variables
-- una hoja base
-- overrides simples
-
-## Documentación Mínima Para Publicar
-
-No publicar sin:
-
-- instalación
-- quick start
-- ejemplo simple
-- ejemplo histórico dual
-- props principales
-- estructura de datos
-- guía de theming
-- documentación de componentes opcionales (`TimelineLegend`, `SourcesBibliography`)
-- capturas
-
-## Demo Recomendada
-
-La demo debería tener al menos:
-
-- caso histórico dual
-- caso simple de una sola capa
-- caso con labels externos
-- caso con bandas contextuales
-- caso con leyenda y bibliografía desacopladas
-
-## Riesgos
-
-- extraer demasiado pronto y heredar decisiones aún inestables
-- dejar la API demasiado ligada al caso “guerra/tecnología”
-- ocultar demasiado `vis-timeline` y volver difícil extender
-- soportar demasiadas variantes en v1
-
-## Estrategia Sana
-
-- mantener v1 chica
-- priorizar estabilidad visual
-- documentar límites
-- usar la app actual como referencia de calidad
-
-## Checklist Antes De Extraer
-
-- labels externos estables
-- tooltip estable
-- selección/modal sin glitches
-- responsive aceptable
-- accesibilidad básica
-- estilos desacoplables
-- build y lint limpios
-
-## Próximos Pasos Concretos
-
-1. Renombrar componentes/helpers pensando en paquete reusable.
-2. Definir carpeta `packages/chronovis-react-kit`.
-3. Mover primero tipos + helpers puros.
-4. Hacer que esta app consuma la librería local.
-5. Publicar recién cuando la demo ya funcione usando el paquete extraído.
+Primero una referencia de calidad que funcione bien.
+Después, una extracción pequeña, estable y publicable.
