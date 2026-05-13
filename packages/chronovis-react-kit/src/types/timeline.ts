@@ -2,6 +2,13 @@ export type TimelineGroupId = string;
 
 export type EventType = "range" | "point";
 
+export interface TimelineGroup {
+  id: TimelineGroupId;
+  content: string;
+  className?: string;
+  order?: number;
+}
+
 export interface TimelineSource {
   id: string;
   title: string;

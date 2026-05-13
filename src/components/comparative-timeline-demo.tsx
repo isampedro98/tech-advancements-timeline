@@ -1,13 +1,26 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { intersectsPeriodRange } from "chronovis-react-kit";
+import {
+  intersectsPeriodRange,
+  TimelineBlock,
+  type TimelineGroup
+} from "chronovis-react-kit";
 
 import { SourcesBibliography } from "@/components/sources-bibliography";
 import { TimelineLegend } from "@/components/timeline-legend";
 import { TimelineModal } from "@/components/timeline-modal";
-import { TimelineBlock } from "@/components/timeline-block";
-import { events } from "@/data/events";
+import { categoryMeta, events } from "@/data/events";
+
+const demoTimelineGroups: TimelineGroup[] = [
+  { id: "wars", content: "Guerras / Geopolítica", className: "timeline-group-wars", order: 1 },
+  {
+    id: "technology",
+    content: "Tecnología / Ciencia",
+    className: "timeline-group-technology",
+    order: 2
+  }
+];
 
 export function ComparativeTimelineDemo() {
   const [activeTab, setActiveTab] = useState<"timeline" | "bibliography">("timeline");
@@ -77,7 +90,9 @@ export function ComparativeTimelineDemo() {
       {activeTab === "timeline" ? (
         <>
           <TimelineBlock
+            categories={categoryMeta}
             events={worldWarsPeriod}
+            groups={demoTimelineGroups}
             title="1914-1945 · Guerras mundiales"
             description="Primer bloque centrado en las guerras mundiales y las primeras aceleraciones tecnológicas de gran escala."
             rangeStart="1914-01-01"
@@ -87,7 +102,9 @@ export function ComparativeTimelineDemo() {
           />
 
           <TimelineBlock
+            categories={categoryMeta}
             events={coldWarPeriod}
+            groups={demoTimelineGroups}
             title="1946-1991 · Guerra Fría"
             description="Segundo bloque dedicado a la rivalidad bipolar, la carrera espacial, los conflictos proxy y la infraestructura tecnológica de posguerra."
             rangeStart="1946-01-01"
@@ -97,7 +114,9 @@ export function ComparativeTimelineDemo() {
           />
 
           <TimelineBlock
+            categories={categoryMeta}
             events={modernityPeriod}
+            groups={demoTimelineGroups}
             title="1992-2026 · Modernidad"
             description="Tercer bloque centrado en globalización digital, navegación satelital, guerra en red, ciberconflicto e inteligencia artificial."
             rangeStart="1992-01-01"

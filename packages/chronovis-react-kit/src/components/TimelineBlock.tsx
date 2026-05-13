@@ -1,17 +1,15 @@
 "use client";
 
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import {
-  formatTimelineEventDate,
-  getTimelineDisplayLabel,
-  shouldUseExternalLabel
-} from "chronovis-react-kit";
 
-import { categoryMeta } from "@/data/events";
-import type { TimelineEvent } from "@/types/timeline";
+import { formatTimelineEventDate } from "../lib/date";
+import { getTimelineDisplayLabel, shouldUseExternalLabel } from "../lib/labels";
+import type { TimelineCategory, TimelineEvent, TimelineGroup } from "../types/timeline";
 
 interface TimelineBlockProps {
   events: TimelineEvent[];
+  categories: TimelineCategory[];
+  groups: TimelineGroup[];
   title: string;
   description: string;
   rangeStart: string;
@@ -72,16 +70,6 @@ interface TooltipState {
 }
 
 type DataSetConstructor = new (items: TimelineItemRecord[]) => unknown;
-
-const timelineGroups = [
-  { id: "wars", content: "Guerras / Geopolítica", className: "timeline-group-wars", order: 1 },
-  {
-    id: "technology",
-    content: "Tecnología / Ciencia",
-    className: "timeline-group-technology",
-    order: 2
-  }
-];
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 const YEAR_IN_MS = DAY_IN_MS * 365.25;
@@ -179,8 +167,8 @@ function getItemClassName(event: TimelineEvent, baseClassName: string) {
   return `${baseClassName} timeline-item--external-label timeline-item--external-range`;
 }
 
-function getEventAriaLabel(event: TimelineEvent) {
-  const category = categoryMeta.find((item) => item.id === event.category);
+function getEventAriaLabel(event: TimelineEvent, categories: TimelineCategory[]) {
+  const category = categories.find((item) => item.id === event.category);
   const parts = [event.title, formatTimelineEventDate(event)];
 
   if (category) {
@@ -261,6 +249,8 @@ function buildTimelineItems(events: TimelineEvent[]): BuiltTimelineData {
 
 export const TimelineBlock = memo(function TimelineBlock({
   events,
+  categories,
+  groups,
   title,
   description,
   rangeStart,
@@ -363,7 +353,26 @@ export const TimelineBlock = memo(function TimelineBlock({
     return null;
   }
 
-  function setVisualHighlightState(itemId: string, className: "timeline-hover-source" | "timeline-hover-related") {
+  function getTimelineItemElement(itemId: string) {
+    if (!containerRef.current) {
+      return null;
+    }
+
+    const itemElements = containerRef.current.querySelectorAll<HTMLElement>(".vis-item");
+
+    for (const itemElement of itemElements) {
+      if (getResolvedItemId(itemElement) === itemId) {
+        return itemElement;
+      }
+    }
+
+    return null;
+  }
+
+  function setVisualHighlightState(
+    itemId: string,
+    className: "timeline-hover-source" | "timeline-hover-related"
+  ) {
     const itemElement = getTimelineItemElement(itemId);
 
     if (!itemElement) {
@@ -394,22 +403,6 @@ export const TimelineBlock = memo(function TimelineBlock({
     }
   }
 
-  function getTimelineItemElement(itemId: string) {
-    if (!containerRef.current) {
-      return null;
-    }
-
-    const itemElements = containerRef.current.querySelectorAll<HTMLElement>(".vis-item");
-
-    for (const itemElement of itemElements) {
-      if (getResolvedItemId(itemElement) === itemId) {
-        return itemElement;
-      }
-    }
-
-    return null;
-  }
-
   function updateTooltipFromElement(itemId: string, itemElement: HTMLElement) {
     const eventId = itemEventMapRef.current[itemId];
     const event = eventId ? eventsByIdRef.current[eventId] : null;
@@ -437,14 +430,14 @@ export const TimelineBlock = memo(function TimelineBlock({
       return;
     }
 
-      const itemElements = containerRef.current.querySelectorAll<HTMLElement>(
-        ".vis-item:not(.timeline-item-background)"
-      );
+    const itemElements = containerRef.current.querySelectorAll<HTMLElement>(
+      ".vis-item:not(.timeline-item-background)"
+    );
 
-      itemElements.forEach((itemElement) => {
-        const itemId = getResolvedItemId(itemElement);
-        const eventId = itemId ? itemEventMapRef.current[itemId] : null;
-        const event = eventId ? eventsByIdRef.current[eventId] : null;
+    itemElements.forEach((itemElement) => {
+      const itemId = getResolvedItemId(itemElement);
+      const eventId = itemId ? itemEventMapRef.current[itemId] : null;
+      const event = eventId ? eventsByIdRef.current[eventId] : null;
 
       if (!itemId || !event) {
         return;
@@ -453,7 +446,7 @@ export const TimelineBlock = memo(function TimelineBlock({
       itemElement.tabIndex = 0;
       itemElement.setAttribute("role", "button");
       itemElement.setAttribute("aria-haspopup", "dialog");
-      itemElement.setAttribute("aria-label", getEventAriaLabel(event));
+      itemElement.setAttribute("aria-label", getEventAriaLabel(event, categories));
     });
   }
 
@@ -484,7 +477,7 @@ export const TimelineBlock = memo(function TimelineBlock({
       const timeline = new Timeline(
         containerRef.current,
         new DataSet(builtData.items),
-        timelineGroups,
+        groups,
         {
           editable: false,
           groupOrder: "order",
@@ -624,7 +617,7 @@ export const TimelineBlock = memo(function TimelineBlock({
           return;
         }
 
-        const itemId = itemElement.dataset.id;
+        const itemId = getResolvedItemId(itemElement);
 
         if (itemId) {
           updateTooltipFromElement(itemId, itemElement);
@@ -656,7 +649,7 @@ export const TimelineBlock = memo(function TimelineBlock({
           return;
         }
 
-        const itemId = itemElement.dataset.id;
+        const itemId = getResolvedItemId(itemElement);
         const eventId = itemId ? itemEventMapRef.current[itemId] : null;
 
         if (!eventId) {
@@ -694,7 +687,7 @@ export const TimelineBlock = memo(function TimelineBlock({
       timelineRef.current?.destroy();
       timelineRef.current = null;
     };
-  }, [events, fullRangeMs, minimumVisibleMs, rangeEnd, rangeStart, rangeStartMs, relatedEventMap]);
+  }, [categories, events, fullRangeMs, groups, minimumVisibleMs, onSelect, rangeEnd, rangeStart, rangeStartMs, relatedEventMap]);
 
   useEffect(() => {
     if (!timelineRef.current || !datasetConstructorRef.current) {
@@ -737,7 +730,7 @@ export const TimelineBlock = memo(function TimelineBlock({
 
   const tooltipEvent = tooltip ? eventsById[tooltip.eventId] : null;
   const tooltipCategory = tooltipEvent
-    ? categoryMeta.find((item) => item.id === tooltipEvent.category)
+    ? categories.find((item) => item.id === tooltipEvent.category)
     : null;
   const tooltipRelatedCount = tooltipEvent ? getRelatedEventIds(tooltipEvent).length : 0;
 
