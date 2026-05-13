@@ -183,11 +183,11 @@ export const sources: TimelineSource[] = [
     url: "https://www.nokia.com/blog/the-transistor-75-years-since-the-famed-nokia-bell-labs-invention-changed-the-world/"
   },
   {
-    id: "wikipedia-integrated-circuit",
-    title: "Invention of the integrated circuit",
-    publisher: "Wikipedia",
-    kind: "enciclopedia",
-    url: "https://en.wikipedia.org/wiki/Invention_of_the_integrated_circuit"
+    id: "ieee-kilby-integrated-circuit",
+    title: "Invention of the Integrated Circuit",
+    publisher: "IEEE Transactions on Electron Devices",
+    kind: "academia",
+    url: "https://web.archive.org/web/20160304071831/http://corphist.computerhistory.org/corphist/documents/doc-496d289787271.pdf"
   },
   {
     id: "darpa-arpanet",
@@ -218,18 +218,32 @@ export const sources: TimelineSource[] = [
     url: "https://home.cern/science/computing/birth-web/short-history-web"
   },
   {
-    id: "csis-drones",
-    title: "How Russia Is Building a Sovereign Drone Ecosystem With AI-Driven Autonomy",
-    publisher: "CSIS",
-    kind: "think-tank",
-    url: "https://www.csis.org/analysis/how-russia-building-sovereign-drone-ecosystem-ai-driven-autonomy"
+    id: "smithsonian-predator",
+    title: "General Atomics MQ-1L Predator A",
+    publisher: "National Air and Space Museum",
+    kind: "museo",
+    url: "https://www.si.edu/object/general-atomics-mq-1l-predator%3Anasm_A20040180000"
   },
   {
-    id: "national-security-archive-stuxnet",
-    title: "Cyber-044 (Stuxnet source document)",
-    publisher: "National Security Archive",
-    kind: "archivo",
-    url: "https://nsarchive2.gwu.edu/NSAEBB/NSAEBB424/docs/Cyber-044.pdf"
+    id: "cfr-armed-drones-bin-laden",
+    title: "Armed Drones and the Hunt for bin Laden",
+    publisher: "Council on Foreign Relations",
+    kind: "think-tank",
+    url: "https://www.cfr.org/articles/armed-drones-and-hunt-bin-laden"
+  },
+  {
+    id: "symantec-stuxnet-dossier",
+    title: "W32.Stuxnet Dossier",
+    publisher: "Symantec Security Response",
+    kind: "industria",
+    url: "https://nsarchive.gwu.edu/document/21440-document-44"
+  },
+  {
+    id: "cisa-stuxnet-mitigation",
+    title: "Stuxnet Malware Mitigation (Update B)",
+    publisher: "CISA / ICS-CERT",
+    kind: "organismo-estatal",
+    url: "https://www.cisa.gov/news-events/ics-advisories/icsa-10-238-01b"
   },
   {
     id: "nato-ai-strategy",

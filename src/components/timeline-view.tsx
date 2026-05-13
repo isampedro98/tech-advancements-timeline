@@ -189,10 +189,6 @@ function getItemClassName(event: TimelineEvent, baseClassName: string) {
   return `${baseClassName} timeline-item--external-label timeline-item--external-range`;
 }
 
-function getContextLabelClassName(event: TimelineEvent, baseClassName: string) {
-  return `${baseClassName} timeline-item-context-label timeline-item--external-point`;
-}
-
 function getEventAriaLabel(event: TimelineEvent) {
   const category = categoryMeta.find((item) => item.id === event.category);
   const parts = [event.title, formatEventDate(event)];
@@ -243,7 +239,7 @@ function buildItems(events: TimelineEvent[]): BuiltTimelineData {
         subgroup: event.category,
         start: event.start,
         type: "point",
-        className: getContextLabelClassName(event, baseClassName),
+        className: `${baseClassName} timeline-item--external-label timeline-item--external-point`,
         title: ""
       });
 

@@ -265,7 +265,7 @@ export const events: TimelineEvent[] = [
     start: "1947-03-12",
     end: "1991-12-26",
     summary:
-      "Período prolongado de competencia bipolar, contención y rivalidad militar, tecnológica, ideológica y geopolítica entre Estados Unidos y la Unión Soviética.",
+      "Rivalidad global entre Estados Unidos y la Unión Soviética surgida tras la Segunda Guerra Mundial, marcada por contención, espionaje, conflictos proxy, carrera nuclear y competencia tecnológica sin guerra directa entre superpotencias.",
     relatedEventIds: ["transistor", "manhattan-project", "sputnik-crisis"],
     sourceIds: ["nwwii-cold-conflict"]
   },
@@ -277,7 +277,7 @@ export const events: TimelineEvent[] = [
     type: "point",
     start: "1947-12-23",
     summary:
-      "El transistor se convirtió en la base de la miniaturización electrónica, la computación, las comunicaciones y la aceleración digital de largo plazo.",
+      "Creado en Bell Labs para superar las limitaciones de los tubos de vacío, el transistor abrió la miniaturización electrónica y se volvió la base material de la computación, las telecomunicaciones y la electrónica moderna.",
     relatedEventIds: ["cold-war", "integrated-circuit", "personal-computing"],
     sourceIds: ["bell-labs-transistor-75"]
   },
@@ -343,9 +343,9 @@ export const events: TimelineEvent[] = [
     start: "1958-09-12",
     end: "1959-07-30",
     summary:
-      "El circuito integrado volvió viables los sistemas electrónicos escalables y permitió equipos más pequeños para guiado, comunicaciones y cómputo.",
+      "La integración de múltiples componentes en un mismo chip volvió escalables los circuitos electrónicos y aceleró la miniaturización necesaria para guiado, comunicaciones, computación y el desarrollo posterior del microprocesador.",
     relatedEventIds: ["transistor", "personal-computing", "arpanet"],
-    sourceIds: ["wikipedia-integrated-circuit", "bell-labs-transistor-75"]
+    sourceIds: ["ieee-kilby-integrated-circuit", "bell-labs-transistor-75"]
   },
   {
     id: "cuban-missile-crisis",
@@ -410,7 +410,7 @@ export const events: TimelineEvent[] = [
     summary:
       "Los microprocesadores y el hardware de consumo expandieron la capacidad digital más allá del Estado y de las grandes instituciones, ampliando la base social del cómputo.",
     relatedEventIds: ["integrated-circuit", "world-wide-web"],
-    sourceIds: ["bell-labs-transistor-75", "wikipedia-integrated-circuit"]
+    sourceIds: ["bell-labs-transistor-75", "ieee-kilby-integrated-circuit"]
   },
   {
     id: "soviet-afghan-war",
@@ -494,17 +494,17 @@ export const events: TimelineEvent[] = [
   },
   {
     id: "drone-warfare",
-    title: "Expansión de la guerra con drones",
+    title: "Despegue de la guerra con drones",
     shortTitle: "Guerra con drones",
     group: "technology",
     category: "aerospace",
     type: "range",
-    start: "2001-01-01",
+    start: "2001-10-07",
     end: "2015-12-31",
     summary:
-      "Los sistemas aéreos no tripulados se volvieron centrales para reconocimiento y ataque, extendiendo la guerra de precisión más allá de la cabina tradicional.",
+      "El uso operativo del Predator armado tras el 11-S convirtió a los drones en una herramienta central de vigilancia persistente y ataque de precisión en la Guerra contra el terrorismo.",
     relatedEventIds: ["war-on-terror", "russo-ukrainian-war", "ai-autonomy"],
-    sourceIds: ["csis-drones"]
+    sourceIds: ["smithsonian-predator", "cfr-armed-drones-bin-laden"]
   },
   {
     id: "stuxnet",
@@ -515,9 +515,9 @@ export const events: TimelineEvent[] = [
     type: "point",
     start: "2010-06-17",
     summary:
-      "Stuxnet hizo visible públicamente el sabotaje cibernético como instrumento estratégico capaz de afectar infraestructura física.",
+      "Stuxnet convirtió en evidencia pública que un malware podía sabotear sistemas industriales y producir efectos físicos, consolidando la ciberguerra como problema estratégico e infraestructural.",
     relatedEventIds: ["hybrid-conflict-era", "war-on-terror"],
-    sourceIds: ["national-security-archive-stuxnet", "nato-hybrid"]
+    sourceIds: ["symantec-stuxnet-dossier", "cisa-stuxnet-mitigation", "nato-hybrid"]
   },
   {
     id: "hybrid-conflict-era",
