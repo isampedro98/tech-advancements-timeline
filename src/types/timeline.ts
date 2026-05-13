@@ -1,3 +1,12 @@
+import type {
+  EventType,
+  TimelineCategory as PackageTimelineCategory,
+  TimelineEvent as PackageTimelineEvent,
+  TimelineGroup as PackageTimelineGroup,
+  TimelinePeriod as PackageTimelinePeriod,
+  TimelineSource as PackageTimelineSource
+} from "chronovis-react-kit";
+
 export type TimelineGroupId = "wars" | "technology";
 
 export type EventCategoryId =
@@ -11,8 +20,6 @@ export type EventCategoryId =
   | "navigation"
   | "cyber-ai";
 
-export type EventType = "range" | "point";
-
 export type SourceKind =
   | "museo"
   | "enciclopedia"
@@ -25,35 +32,26 @@ export type SourceKind =
   | "industria"
   | "agencia-defensa";
 
-export interface TimelineSource {
-  id: string;
-  title: string;
-  fullTitle?: string;
-  publisher: string;
-  kind: SourceKind;
-  url: string;
+export type TimelinePeriod = PackageTimelinePeriod;
+
+export interface TimelineGroup extends Omit<PackageTimelineGroup, "id"> {
+  id: TimelineGroupId;
 }
 
-export interface TimelineEvent {
-  id: string;
-  title: string;
-  shortTitle?: string;
+export interface TimelineSource extends Omit<PackageTimelineSource, "kind"> {
+  kind: SourceKind;
+}
+
+export interface CategoryMeta extends Omit<PackageTimelineCategory, "id" | "track"> {
+  id: EventCategoryId;
+  track: TimelineGroupId;
+}
+
+export interface TimelineEvent
+  extends Omit<PackageTimelineEvent, "group" | "category" | "sourceIds"> {
   group: TimelineGroupId;
   category: EventCategoryId;
-  type: EventType;
-  renderAsContextBand?: boolean;
-  start: string;
-  end?: string;
-  isOngoing?: boolean;
-  summary: string;
-  relatedEventIds: string[];
   sourceIds: string[];
 }
 
-export interface CategoryMeta {
-  id: EventCategoryId;
-  label: string;
-  color: string;
-  textColor: string;
-  track: TimelineGroupId;
-}
+export type { EventType };

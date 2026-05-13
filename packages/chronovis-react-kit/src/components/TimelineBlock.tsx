@@ -783,33 +783,27 @@ export const TimelineBlock = memo(function TimelineBlock({
 
           {tooltip && tooltipEvent ? (
             <div
-              className={`pointer-events-none fixed z-30 w-[290px] rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-[0_18px_40px_rgba(15,23,42,0.12)] backdrop-blur-sm ${
-                tooltip.placement === "top" ? "-translate-y-full" : ""
+              className={`chronovis-tooltip ${
+                tooltip.placement === "top" ? "chronovis-tooltip--top" : ""
               }`}
               style={{
                 left: `${tooltip.left}px`,
                 top: `${tooltip.top}px`
               }}
             >
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+              <div className="chronovis-tooltip__header">
+                <p className="chronovis-tooltip__eyebrow">
                   {tooltipCategory?.label ?? "Evento"}
                 </p>
                 {tooltipRelatedCount > 0 ? (
-                  <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400">
+                  <span className="chronovis-tooltip__related-count">
                     {tooltipRelatedCount} relacionados
                   </span>
                 ) : null}
               </div>
-              <p className="mt-2 text-sm font-semibold leading-6 text-slate-950">
-                {getTimelineDisplayLabel(tooltipEvent)}
-              </p>
-              <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">
-                {formatTimelineEventDate(tooltipEvent)}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-700">
-                {getTooltipSummary(tooltipEvent.summary)}
-              </p>
+              <p className="chronovis-tooltip__title">{getTimelineDisplayLabel(tooltipEvent)}</p>
+              <p className="chronovis-tooltip__date">{formatTimelineEventDate(tooltipEvent)}</p>
+              <p className="chronovis-tooltip__summary">{getTooltipSummary(tooltipEvent.summary)}</p>
             </div>
           ) : null}
         </div>

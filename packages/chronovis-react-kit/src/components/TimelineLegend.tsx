@@ -1,26 +1,36 @@
-import { categoryMeta } from "@/data/events";
+import type { TimelineCategory } from "../types/timeline";
 
-export function TimelineLegend() {
-  const warCategories = categoryMeta.filter((category) => category.track === "wars");
-  const technologyCategories = categoryMeta.filter(
-    (category) => category.track === "technology"
-  );
+interface TimelineLegendProps {
+  categories: TimelineCategory[];
+  title?: string;
+  description?: string;
+  warsHeading?: string;
+  technologyHeading?: string;
+}
+
+export function TimelineLegend({
+  categories,
+  title = "Leyenda",
+  description = "El color indica la categoría temática y la posición vertical separa los conflictos de los desarrollos tecnológicos.",
+  warsHeading = "Guerras / Geopolítica",
+  technologyHeading = "Ciencia / Tecnología"
+}: TimelineLegendProps) {
+  const warCategories = categories.filter((category) => category.track === "wars");
+  const technologyCategories = categories.filter((category) => category.track === "technology");
 
   return (
     <section className="rounded-2xl border border-line bg-panel p-5 shadow-panel">
       <div className="flex flex-col gap-2">
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-          Leyenda
+          {title}
         </p>
-        <p className="text-sm text-slate-600">
-          El color indica la categoría temática y la posición vertical separa los conflictos de los desarrollos tecnológicos.
-        </p>
+        <p className="text-sm text-slate-600">{description}</p>
       </div>
 
       <div className="mt-5 grid gap-6 lg:grid-cols-2">
         <div>
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-            Guerras / Geopolítica
+            {warsHeading}
           </p>
           <div className="space-y-3">
             {warCategories.map((category) => (
@@ -41,7 +51,7 @@ export function TimelineLegend() {
 
         <div>
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-            Ciencia / Tecnología
+            {technologyHeading}
           </p>
           <div className="space-y-3">
             {technologyCategories.map((category) => (

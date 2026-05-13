@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import "vis-timeline/styles/vis-timeline-graph2d.css";
+import "chronovis-react-kit/styles/base.css";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {

@@ -3,3 +3,7 @@ export * from "./lib/date";
 export * from "./lib/labels";
 export * from "./lib/periods";
 export * from "./components/TimelineBlock";
+export * from "./components/TimelineModal";
+export * from "./components/TimelineLegend";
+export * from "./components/SourcesBibliography";
+export * from "./components/ComparativeTimeline";
