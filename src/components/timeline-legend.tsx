@@ -1,6 +1,6 @@
 import { categoryMeta } from "@/data/events";
 
-export function Legend() {
+export function TimelineLegend() {
   const warCategories = categoryMeta.filter((category) => category.track === "wars");
   const technologyCategories = categoryMeta.filter(
     (category) => category.track === "technology"

@@ -1,5 +1,5 @@
 import { ProjectIntro } from "@/components/project-intro";
-import { TimelineDashboard } from "@/components/timeline-dashboard";
+import { ComparativeTimelineDemo } from "@/components/comparative-timeline-demo";
 
 export default function HomePage() {
   return (
@@ -7,7 +7,7 @@ export default function HomePage() {
       <ProjectIntro />
 
       <div className="mt-8">
-        <TimelineDashboard />
+        <ComparativeTimelineDemo />
       </div>
     </main>
   );

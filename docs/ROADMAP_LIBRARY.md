@@ -80,7 +80,7 @@ Responsable de:
   apps/
     demo-next/
   packages/
-    timeline-react/
+    chronovis-react-kit/
       src/
         components/
           TimelineCanvas.tsx
@@ -88,6 +88,7 @@ Responsable de:
           TimelineTooltip.tsx
           TimelineModal.tsx
           TimelineLegend.tsx
+          SourcesBibliography.tsx
         hooks/
           useTimelineInstance.ts
           useTimelineTooltip.ts
@@ -135,6 +136,7 @@ La API v1 debería ser chica.
 - `renderTooltip`
 - `renderEventDetails`
 - `renderLegend`
+- `renderBibliography`
 - `theme`
 
 ## Niveles De Uso
@@ -155,7 +157,8 @@ y obtiene:
 - labels bien resueltos
 - tooltip
 - modal
-- leyenda
+- leyenda opcional
+- bibliografía opcional
 
 ### Modo avanzado
 
@@ -164,6 +167,8 @@ El usuario puede overridear:
 - rendering de labels
 - tooltip
 - modal
+- legend
+- bibliography
 - color mapping
 - spacing
 - reglas de narrow/external labels
@@ -172,9 +177,11 @@ El usuario puede overridear:
 
 La app actual ya insinúa estas piezas:
 
-- `TimelineView`
-- `EventDetailsPanel`
-- `Legend`
+- `TimelineBlock`
+- `TimelineModal`
+- `TimelineLegend`
+- `ComparativeTimelineDemo`
+- `SourcesBibliography`
 - helpers de fechas
 - dataset tipado
 - separación entre eventos, fuentes y categorías
@@ -231,6 +238,7 @@ Encapsular:
 - tooltip
 - modal
 - legend
+- bibliography
 - intro/notes solo si aportan valor reusable
 
 ### Etapa 6. Montar demo separada
@@ -273,6 +281,7 @@ Conviene que v1 soporte:
 - fondo de tooltip
 - estilo de labels externos
 - altura de tracks
+- visibilidad opcional de leyenda y bibliografía
 
 Idealmente con:
 
@@ -291,6 +300,7 @@ No publicar sin:
 - props principales
 - estructura de datos
 - guía de theming
+- documentación de componentes opcionales (`TimelineLegend`, `SourcesBibliography`)
 - capturas
 
 ## Demo Recomendada
@@ -301,6 +311,7 @@ La demo debería tener al menos:
 - caso simple de una sola capa
 - caso con labels externos
 - caso con bandas contextuales
+- caso con leyenda y bibliografía desacopladas
 
 ## Riesgos
 
@@ -328,10 +339,8 @@ La demo debería tener al menos:
 
 ## Próximos Pasos Concretos
 
-1. Terminar de pulir esta app como reference implementation.
-2. Limpiar `TODOs` que impactan directamente la API futura.
-3. Renombrar componentes/helpers pensando en paquete reusable.
-4. Definir carpeta `packages/timeline-react`.
-5. Mover primero tipos + helpers puros.
-6. Hacer que esta app consuma la librería local.
-7. Publicar recién cuando la demo ya funcione usando el paquete extraído.
+1. Renombrar componentes/helpers pensando en paquete reusable.
+2. Definir carpeta `packages/chronovis-react-kit`.
+3. Mover primero tipos + helpers puros.
+4. Hacer que esta app consuma la librería local.
+5. Publicar recién cuando la demo ya funcione usando el paquete extraído.

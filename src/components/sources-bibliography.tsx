@@ -20,7 +20,7 @@ const bibliographyEntries = Array.from(new Set(events.flatMap((event) => event.s
     return left.title.localeCompare(right.title, "es");
   });
 
-export function Bibliography() {
+export function SourcesBibliography() {
   return (
     <section className="rounded-2xl border border-line bg-panel p-5 shadow-panel lg:p-6">
       <div className="flex flex-col gap-2">

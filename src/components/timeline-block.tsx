@@ -1,12 +1,16 @@
 "use client";
 
 import { memo, useEffect, useMemo, useRef, useState } from "react";
+import {
+  formatTimelineEventDate,
+  getTimelineDisplayLabel,
+  shouldUseExternalLabel
+} from "chronovis-react-kit";
 
 import { categoryMeta } from "@/data/events";
-import { formatEventDate } from "@/lib/date";
 import type { TimelineEvent } from "@/types/timeline";
 
-interface TimelineViewProps {
+interface TimelineBlockProps {
   events: TimelineEvent[];
   title: string;
   description: string;
@@ -69,7 +73,7 @@ interface TooltipState {
 
 type DataSetConstructor = new (items: TimelineItemRecord[]) => unknown;
 
-const groups = [
+const timelineGroups = [
   { id: "wars", content: "Guerras / Geopolítica", className: "timeline-group-wars", order: 1 },
   {
     id: "technology",
@@ -110,7 +114,7 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#39;");
 }
 
-function getPrimaryTimelineItemId(properties: TimelineEventProperties) {
+function getPrimaryTimelineCanvasItemId(properties: TimelineEventProperties) {
   if (Array.isArray(properties.items) && properties.items.length > 0) {
     return String(properties.items[0]);
   }
@@ -120,10 +124,6 @@ function getPrimaryTimelineItemId(properties: TimelineEventProperties) {
   }
 
   return null;
-}
-
-function getDisplayLabel(event: TimelineEvent) {
-  return event.shortTitle?.trim() || event.title;
 }
 
 function getRelatedEventIds(event: TimelineEvent) {
@@ -142,25 +142,15 @@ function getTooltipSummary(summary: string) {
   return `${sliced.slice(0, lastSpace > 0 ? lastSpace : sliced.length)}…`;
 }
 
-function getEventDurationMs(event: TimelineEvent) {
-  const end = event.end ?? event.start;
-  return Math.max(0, new Date(end).getTime() - new Date(event.start).getTime());
-}
-
 function isNarrowEvent(event: TimelineEvent) {
-  if (event.renderAsContextBand) {
-    return false;
-  }
-
-  if (forcedExternalLabelIds.has(event.id) || event.type === "point") {
-    return true;
-  }
-
-  return getEventDurationMs(event) <= EXTERNAL_LABEL_DURATION_MS;
+  return shouldUseExternalLabel(event, {
+    forceExternalLabelIds: forcedExternalLabelIds,
+    externalLabelDurationMs: EXTERNAL_LABEL_DURATION_MS
+  });
 }
 
 function buildLabelMarkup(event: TimelineEvent) {
-  const label = escapeHtml(getDisplayLabel(event));
+  const label = escapeHtml(getTimelineDisplayLabel(event));
 
   if (isNarrowEvent(event)) {
     return `
@@ -191,7 +181,7 @@ function getItemClassName(event: TimelineEvent, baseClassName: string) {
 
 function getEventAriaLabel(event: TimelineEvent) {
   const category = categoryMeta.find((item) => item.id === event.category);
-  const parts = [event.title, formatEventDate(event)];
+  const parts = [event.title, formatTimelineEventDate(event)];
 
   if (category) {
     parts.push(category.label);
@@ -207,7 +197,7 @@ interface BuiltTimelineData {
   items: TimelineItemRecord[];
 }
 
-function buildItems(events: TimelineEvent[]): BuiltTimelineData {
+function buildTimelineItems(events: TimelineEvent[]): BuiltTimelineData {
   const itemToEventId: Record<string, string> = {};
   const eventToItemIds: Record<string, string[]> = {};
   const items: TimelineItemRecord[] = [];
@@ -269,7 +259,7 @@ function buildItems(events: TimelineEvent[]): BuiltTimelineData {
   return { eventToItemIds, itemToEventId, items };
 }
 
-export const TimelineView = memo(function TimelineView({
+export const TimelineBlock = memo(function TimelineBlock({
   events,
   title,
   description,
@@ -277,7 +267,7 @@ export const TimelineView = memo(function TimelineView({
   rangeEnd,
   contextNote,
   onSelect
-}: TimelineViewProps) {
+}: TimelineBlockProps) {
   const surfaceFrameRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const timelineRef = useRef<TimelineApi | null>(null);
@@ -487,14 +477,14 @@ export const TimelineView = memo(function TimelineView({
       }
 
       datasetConstructorRef.current = DataSet as DataSetConstructor;
-      const builtData = buildItems(events);
+      const builtData = buildTimelineItems(events);
       eventItemMapRef.current = builtData.eventToItemIds;
       itemEventMapRef.current = builtData.itemToEventId;
 
       const timeline = new Timeline(
         containerRef.current,
         new DataSet(builtData.items),
-        groups,
+        timelineGroups,
         {
           editable: false,
           groupOrder: "order",
@@ -528,7 +518,7 @@ export const TimelineView = memo(function TimelineView({
       ) as TimelineApi;
 
       timeline.on("select", (properties) => {
-        const selectedItemId = getPrimaryTimelineItemId(properties);
+        const selectedItemId = getPrimaryTimelineCanvasItemId(properties);
         const selectedId = selectedItemId ? itemEventMapRef.current[selectedItemId] : null;
         clearSemanticHighlights();
         hideTooltip();
@@ -544,7 +534,7 @@ export const TimelineView = memo(function TimelineView({
       });
 
       timeline.on("itemover", (properties) => {
-        const itemId = getPrimaryTimelineItemId(properties);
+        const itemId = getPrimaryTimelineCanvasItemId(properties);
 
         if (!itemId) {
           return;
@@ -711,7 +701,7 @@ export const TimelineView = memo(function TimelineView({
       return;
     }
 
-    const builtData = buildItems(events);
+    const builtData = buildTimelineItems(events);
     eventItemMapRef.current = builtData.eventToItemIds;
     itemEventMapRef.current = builtData.itemToEventId;
     const DataSet = datasetConstructorRef.current;
@@ -819,10 +809,10 @@ export const TimelineView = memo(function TimelineView({
                 ) : null}
               </div>
               <p className="mt-2 text-sm font-semibold leading-6 text-slate-950">
-                {getDisplayLabel(tooltipEvent)}
+                {getTimelineDisplayLabel(tooltipEvent)}
               </p>
               <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">
-                {formatEventDate(tooltipEvent)}
+                {formatTimelineEventDate(tooltipEvent)}
               </p>
               <p className="mt-2 text-sm leading-6 text-slate-700">
                 {getTooltipSummary(tooltipEvent.summary)}

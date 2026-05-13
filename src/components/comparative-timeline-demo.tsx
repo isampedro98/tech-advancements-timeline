@@ -1,23 +1,15 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { intersectsPeriodRange } from "chronovis-react-kit";
 
-import { Bibliography } from "@/components/bibliography";
-import { EventDetailsPanel } from "@/components/event-details-panel";
-import { Legend } from "@/components/legend";
-import { TimelineView } from "@/components/timeline-view";
+import { SourcesBibliography } from "@/components/sources-bibliography";
+import { TimelineLegend } from "@/components/timeline-legend";
+import { TimelineModal } from "@/components/timeline-modal";
+import { TimelineBlock } from "@/components/timeline-block";
 import { events } from "@/data/events";
 
-function overlapsRange(eventStart: string, eventEnd: string | undefined, rangeStart: string, rangeEnd: string) {
-  const start = new Date(eventStart).getTime();
-  const end = new Date(eventEnd ?? eventStart).getTime();
-  const periodStart = new Date(rangeStart).getTime();
-  const periodEnd = new Date(rangeEnd).getTime();
-
-  return start <= periodEnd && end >= periodStart;
-}
-
-export function TimelineDashboard() {
+export function ComparativeTimelineDemo() {
   const [activeTab, setActiveTab] = useState<"timeline" | "bibliography">("timeline");
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const selectedEvent = useMemo(
@@ -26,17 +18,23 @@ export function TimelineDashboard() {
   );
   const worldWarsPeriod = useMemo(
     () =>
-      events.filter((event) => overlapsRange(event.start, event.end, "1914-01-01", "1945-12-31")),
+      events.filter((event) =>
+        intersectsPeriodRange(event.start, event.end, "1914-01-01", "1945-12-31")
+      ),
     []
   );
   const coldWarPeriod = useMemo(
     () =>
-      events.filter((event) => overlapsRange(event.start, event.end, "1946-01-01", "1991-12-31")),
+      events.filter((event) =>
+        intersectsPeriodRange(event.start, event.end, "1946-01-01", "1991-12-31")
+      ),
     []
   );
   const modernityPeriod = useMemo(
     () =>
-      events.filter((event) => overlapsRange(event.start, event.end, "1992-01-01", "2026-12-31")),
+      events.filter((event) =>
+        intersectsPeriodRange(event.start, event.end, "1992-01-01", "2026-12-31")
+      ),
     []
   );
 
@@ -78,7 +76,7 @@ export function TimelineDashboard() {
 
       {activeTab === "timeline" ? (
         <>
-          <TimelineView
+          <TimelineBlock
             events={worldWarsPeriod}
             title="1914-1945 · Guerras mundiales"
             description="Primer bloque centrado en las guerras mundiales y las primeras aceleraciones tecnológicas de gran escala."
@@ -88,7 +86,7 @@ export function TimelineDashboard() {
             onSelect={selectEvent}
           />
 
-          <TimelineView
+          <TimelineBlock
             events={coldWarPeriod}
             title="1946-1991 · Guerra Fría"
             description="Segundo bloque dedicado a la rivalidad bipolar, la carrera espacial, los conflictos proxy y la infraestructura tecnológica de posguerra."
@@ -98,7 +96,7 @@ export function TimelineDashboard() {
             onSelect={selectEvent}
           />
 
-          <TimelineView
+          <TimelineBlock
             events={modernityPeriod}
             title="1992-2026 · Modernidad"
             description="Tercer bloque centrado en globalización digital, navegación satelital, guerra en red, ciberconflicto e inteligencia artificial."
@@ -107,13 +105,13 @@ export function TimelineDashboard() {
             onSelect={selectEvent}
           />
 
-          <Legend />
+          <TimelineLegend />
         </>
       ) : (
-        <Bibliography />
+        <SourcesBibliography />
       )}
 
-      <EventDetailsPanel
+      <TimelineModal
         event={selectedEvent}
         onClose={() => setSelectedEventId(null)}
         onSelectEvent={selectEvent}

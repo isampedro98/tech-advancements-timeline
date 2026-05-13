@@ -20,7 +20,9 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "chronovis-react-kit": ["./packages/chronovis-react-kit/src/index.ts"],
+      "chronovis-react-kit/*": ["./packages/chronovis-react-kit/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.d.ts", ".next/types/**/*.ts"],

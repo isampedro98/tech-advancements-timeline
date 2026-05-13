@@ -1,0 +1,21 @@
+{
+  "name": "chronovis-react-kit",
+  "version": "0.0.0",
+  "private": true,
+  "description": "React toolkit for comparative historical and editorial timelines",
+  "sideEffects": [
+    "./src/styles/base.css"
+  ],
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "vis-data": "^7.1.9",
+    "vis-timeline": "^7.7.3"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles/base.css": "./src/styles/base.css"
+  }
+}

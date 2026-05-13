@@ -1,21 +1,22 @@
 "use client";
 
+import { formatTimelineEventDate } from "chronovis-react-kit";
+
 import { sourceKindLabels, sourceMap } from "@/data/sources";
 import { categoryMeta, eventMap } from "@/data/events";
-import { formatEventDate } from "@/lib/date";
 import type { TimelineEvent } from "@/types/timeline";
 
-interface EventDetailsPanelProps {
+interface TimelineModalProps {
   event: TimelineEvent | null;
   onClose: () => void;
   onSelectEvent: (eventId: string) => void;
 }
 
-export function EventDetailsPanel({
+export function TimelineModal({
   event,
   onClose,
   onSelectEvent
-}: EventDetailsPanelProps) {
+}: TimelineModalProps) {
   if (!event) {
     return null;
   }
@@ -41,7 +42,7 @@ export function EventDetailsPanel({
               Evento seleccionado
             </p>
             <h2 className="mt-4 font-serif text-3xl text-slate-950">{event.title}</h2>
-            <p className="mt-2 text-sm text-slate-600">{formatEventDate(event)}</p>
+            <p className="mt-2 text-sm text-slate-600">{formatTimelineEventDate(event)}</p>
           </div>
 
           <div className="flex items-center gap-3">
