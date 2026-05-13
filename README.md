@@ -1,6 +1,7 @@
 # Línea De Tiempo De Guerra Y Tecnología
 
 Pagina Web: https://isampedro98.github.io/tech-advancements-timeline/
+
 Visualización interactiva realizada con Next.js para una consigna de Information Visualization. La aplicación compara conflictos bélicos y geopolíticos con avances científicos y tecnológicos entre `1914` y `2026`, usando un mismo eje temporal para facilitar la lectura comparativa.
 
 ## Stack
